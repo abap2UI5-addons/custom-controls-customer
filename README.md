@@ -226,10 +226,12 @@ ways work:
 ABAP objects here follow the scheme `z2ui5_<type>_<token>_<object>` the
 abap2UI5 repositories share, with the token **`ccc`** — *custom control
 customers* — reserved for this one, the way `smp` belongs to
-[abap2UI5/samples](https://github.com/abap2UI5/samples) and `cc` to the
-community add-on. So every class starts with `Z2UI5_CL_CCC` (`Z2UI5_CX_CCC`
-for exceptions, `Z2UI5_IF_CCC` for interfaces) and is at most 25 characters
-long — `object_naming` in `abaplint.jsonc` enforces both, and the comment
+[abap2UI5/samples](https://github.com/abap2UI5/samples) and `cci` to the
+community add-on
+[abap2UI5-addons/custom-controls](https://github.com/abap2UI5-addons/custom-controls).
+So every class starts with `Z2UI5_CL_CCC` (`Z2UI5_CX_CCC` for exceptions,
+`Z2UI5_IF_CCC` for interfaces) and is at most 25 characters long —
+`object_naming` in `abaplint.jsonc` enforces both, and the comment
 there explains where the 25 comes from.
 
 The frontend side carries the same token: the BSP is `Z2UI5_CCC` and the
