@@ -1,24 +1,23 @@
-[![abap version](https://img.shields.io/badge/abap%20version-standard%20%28%E2%89%A5%207.50%29-blue)](#install)
-[![namespace](https://img.shields.io/badge/namespace-z2ui5__cl__ccc-blue)](abaplint.jsonc)
-[![bsp](https://img.shields.io/badge/bsp-Z2UI5__CCC-blue)](#how-it-works)
-[![dependency](https://img.shields.io/badge/dependency-abap2UI5-blue)](https://github.com/abap2UI5/abap2UI5)
-<br>
-<br>
-[![check](https://github.com/abap2UI5/custom-controls-customer/actions/workflows/check.yml/badge.svg)](https://github.com/abap2UI5/custom-controls-customer/actions/workflows/check.yml)
+# custom-controls-customer
 
-# abap2UI5 customer frontend extension
+[![abap2UI5-addons](https://img.shields.io/badge/abap2UI5--addons-template-1873b4)](https://github.com/abap2UI5-addons)
+[![ABAP](https://img.shields.io/badge/ABAP-Standard%20%E2%89%A5%207.50-blue)](#installation)
+[![abap2UI5](https://img.shields.io/badge/requires-abap2UI5-blue)](https://github.com/abap2UI5/abap2UI5)
+[![License](https://img.shields.io/github/license/abap2UI5-addons/custom-controls-customer)](LICENSE)
+<br>
+[![check](https://img.shields.io/github/actions/workflow/status/abap2UI5-addons/custom-controls-customer/check.yml?branch=main&label=check)](https://github.com/abap2UI5-addons/custom-controls-customer/actions/workflows/check.yml)
 
-A template repository for **your own** frontend artefacts — a UI5 reuse
-library, an icon font, corporate CSS, a custom control — served to
+**A template repository for your own frontend artefacts in abap2UI5.** A UI5
+reuse library, an icon font, corporate CSS, a custom control — served to
 [abap2UI5](https://github.com/abap2UI5/abap2UI5) from a BSP that belongs to
-you.
-
-Fork it (or copy it into your own git host), put your files under
+you. Fork it (or copy it into your own git host), put your files under
 `app/webapp/`, run `npm run app2bsp`, and install the result with abapGit.
 Nothing in abap2UI5 or in its frontend BSP has to change, and no pull request
 against the framework is needed.
 
-## The problem this solves
+> Part of [abap2UI5-addons](https://github.com/abap2UI5-addons) - addons and apps for [abap2UI5](https://github.com/abap2UI5/abap2UI5), installed with [abapGit](https://abapgit.org).
+
+## Why
 
 Adding a UI5 reuse library to abap2UI5 used to mean patching the framework's
 own BSP by hand, in four places:
@@ -40,50 +39,33 @@ same mechanism [abap2UI5-addons/custom-controls](https://github.com/abap2UI5-add
 uses for the community controls, with a second reserved namespace so the two
 never collide.
 
-## How it works
+## Installation
 
-abap2UI5 reserves the resourceRoot **`z2ui5_ccc`** in its `manifest.json`:
+**Requirements**
 
-```json
-"sap.ui5": { "resourceRoots": { "z2ui5_cci": "../z2ui5_cci/", "z2ui5_ccc": "../z2ui5_ccc/" } }
-```
+- Standard ABAP 7.50 or higher
+- [abap2UI5](https://github.com/abap2UI5/abap2UI5) - a version that reserves
+  the `z2ui5_ccc` resourceRoot, installed in the backend. On an older
+  framework the check app renders an empty page and the browser console shows
+  a failed request for `z2ui5_ccc/cc/Extension.js`.
+- [abap2UI5/frontend](https://github.com/abap2UI5/frontend) — the frontend BSP,
+  when running in BSP or launchpad mode
 
-so the module `z2ui5_ccc/cc/Example` is served from
-`/sap/bc/ui5_ui5/sap/z2ui5_ccc/cc/Example.js` — the BSP `Z2UI5_CCC` that this
-repository builds. In the standalone HTTP service, where there is no sibling
-BSP to resolve `../z2ui5_ccc/` against, `z2ui5_cl_http_handler` hands the
-absolute path to the frontend instead. All three delivery modes (BSP,
-launchpad, ICF service) therefore resolve it without configuration.
+**Steps** - with [abapGit](https://abapgit.org), in this order:
 
-Registering the path costs nothing when this repository is not installed:
-the browser requests nothing from `z2ui5_ccc` until a view actually names the
-namespace.
+1. [abap2UI5](https://github.com/abap2UI5/abap2UI5) (and
+   [abap2UI5/frontend](https://github.com/abap2UI5/frontend) for BSP or
+   launchpad mode)
+2. fork this repository (or copy it into your own git host) and put your
+   artefacts in - see [Usage](#usage)
+3. your fork (branch `main`) - it brings the ABAP classes, the BSP
+   application `Z2UI5_CCC` and the two ICF nodes it is served from
 
-```
-your ABAP app  ──►  z2ui5_cl_ccc=>render( page )
-                          │  emits <z2ui5_ccc:Extension/> into the view
-                          ▼
-abap2UI5 frontend  ──►  loads z2ui5_ccc/cc/Extension.js from YOUR BSP
-                          │  which registers, at page level:
-                          ├─ resource roots of other BSPs
-                          ├─ UI5 reuse libraries
-                          ├─ icon fonts (IconPool)
-                          └─ stylesheets
-```
+**Start** - **`?app_start=z2ui5_cl_ccc_sample_00`** — the check app. If the badge
+renders, is styled and reacts to a click, the BSP is deployed and the
+frontend resolves `z2ui5_ccc`.
 
-## Install
-
-1. Install this repository with abapGit. It brings the ABAP classes, the BSP
-   application `Z2UI5_CCC` and the two ICF nodes it is served from.
-2. Start **`?app_start=z2ui5_cl_ccc_sample_00`** — the check app. If the badge
-   renders, is styled and reacts to a click, the BSP is deployed and the
-   frontend resolves `z2ui5_ccc`.
-
-Requires an abap2UI5 version that reserves the `z2ui5_ccc` resourceRoot. On an
-older framework the check app renders an empty page and the browser console
-shows a failed request for `z2ui5_ccc/cc/Extension.js`.
-
-## Putting your artefacts in
+## Usage
 
 ### 1. Drop the files under `app/webapp/`
 
@@ -166,6 +148,37 @@ client->view_display( view->stringify( ) ).
 view that relies on an icon font, a stylesheet or a registered library —
 before the controls that use them. Calling it twice is harmless; the
 installation runs once per page.
+
+## How it works
+
+abap2UI5 reserves the resourceRoot **`z2ui5_ccc`** in its `manifest.json`:
+
+```json
+"sap.ui5": { "resourceRoots": { "z2ui5_cci": "../z2ui5_cci/", "z2ui5_ccc": "../z2ui5_ccc/" } }
+```
+
+so the module `z2ui5_ccc/cc/Example` is served from
+`/sap/bc/ui5_ui5/sap/z2ui5_ccc/cc/Example.js` — the BSP `Z2UI5_CCC` that this
+repository builds. In the standalone HTTP service, where there is no sibling
+BSP to resolve `../z2ui5_ccc/` against, `z2ui5_cl_http_handler` hands the
+absolute path to the frontend instead. All three delivery modes (BSP,
+launchpad, ICF service) therefore resolve it without configuration.
+
+Registering the path costs nothing when this repository is not installed:
+the browser requests nothing from `z2ui5_ccc` until a view actually names the
+namespace.
+
+```
+your ABAP app  ──►  z2ui5_cl_ccc=>render( page )
+                          │  emits <z2ui5_ccc:Extension/> into the view
+                          ▼
+abap2UI5 frontend  ──►  loads z2ui5_ccc/cc/Extension.js from YOUR BSP
+                          │  which registers, at page level:
+                          ├─ resource roots of other BSPs
+                          ├─ UI5 reuse libraries
+                          ├─ icon fonts (IconPool)
+                          └─ stylesheets
+```
 
 ## Keeping an existing reuse-library BSP
 
@@ -260,12 +273,17 @@ system demands it, but keep the resourceRoot.
 | `src/00/z2ui5_cl_ccc_sample_00.clas.abap` | installation check app |
 | `tools/app2bsp.mjs` | `app/webapp` → the abapGit BSP artefacts under `src/01` |
 
-## Dependencies
+## Development
 
-* [abap2UI5](https://github.com/abap2UI5/abap2UI5) — the framework, installed
-  in the backend
-* [abap2UI5/frontend](https://github.com/abap2UI5/frontend) — the frontend BSP,
-  when running in BSP or launchpad mode
+CI (`.github/workflows/check.yml`) runs on every push to `main` and every pull
+request: abaplint against `abaplint.jsonc`, a check that the BSP under `src/01`
+matches `app/webapp` (`npm run app2bsp` must leave no diff), and a syntax check
+of every JavaScript file under `app/webapp`. Run the same before you push:
+
+```bash
+npm run app2bsp
+npx abaplint abaplint.jsonc
+```
 
 ## Related
 
@@ -273,3 +291,11 @@ system demands it, but keep the resourceRoot.
   — the same mechanism under the reserved namespace `z2ui5_cci`, for controls
   shared with the community. If what you are building is generally useful,
   contribute it there instead.
+
+## Contributing
+
+Issues and pull requests are welcome.
+
+## License
+
+MIT - see [LICENSE](LICENSE).
