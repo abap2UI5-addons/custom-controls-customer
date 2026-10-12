@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: '22'
       - name: abaplint (expect 0 issues)
-        run: npx --yes @abaplint/cli@2.120.73 abaplint.jsonc
+        run: npx --yes @abaplint/cli@2.120.75 abaplint.jsonc
 
   app2bsp:
     runs-on: ubuntu-latest
