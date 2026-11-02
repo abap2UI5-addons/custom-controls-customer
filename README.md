@@ -44,6 +44,8 @@ never collide.
 **Requirements**
 
 - Standard ABAP 7.50 or higher
+- NetWeaver 7.02 - 7.40: the branch `702`, downported automatically from
+  `main` on every push - pull abap2UI5 from their `702` branches as well
 - [abap2UI5](https://github.com/abap2UI5/abap2UI5) - a version that reserves
   the `z2ui5_ccc` resourceRoot, installed in the backend. On an older
   framework the check app renders an empty page and the browser console shows
