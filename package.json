@@ -22,6 +22,6 @@
     "auto_downport": "(abaplint --fix .github/abaplint/abap_702.jsonc || true) && npm run syfixes && npm run strip_trailing_ws && abaplint .github/abaplint/abap_702.jsonc && cp -f .github/abaplint/abap_702.jsonc abaplint.jsonc && npm run abaplintpathfix"
   },
   "devDependencies": {
-    "@abaplint/cli": "^2.120.75"
+    "@abaplint/cli": "^2.120.92"
   }
 }
