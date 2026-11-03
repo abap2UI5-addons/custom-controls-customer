@@ -19,7 +19,12 @@
     "strip_trailing_ws": "find src -type f -name '*.abap' -exec sed -i 's/[[:space:]]\\+$//' {} +",
     "abaplintpathfix": "sed -i 's|\"/\\.\\./\\.\\./src/|\"/src/|g' abaplint.jsonc",
     "downport": "abaplint --fix .github/abaplint/abap_702.jsonc && npm run syfixes",
-    "auto_downport": "(abaplint --fix .github/abaplint/abap_702.jsonc || true) && npm run syfixes && npm run strip_trailing_ws && abaplint .github/abaplint/abap_702.jsonc && cp -f .github/abaplint/abap_702.jsonc abaplint.jsonc && npm run abaplintpathfix"
+    "auto_downport": "(abaplint --fix .github/abaplint/abap_702.jsonc || true) && npm run syfixes && npm run strip_trailing_ws && abaplint .github/abaplint/abap_702.jsonc && cp -f .github/abaplint/abap_702.jsonc abaplint.jsonc && npm run abaplintpathfix",
+    "lint": "abaplint abaplint.jsonc",
+    "check:js": "for f in $(find app/webapp -name '*.js'); do node --check \"$f\" || exit 1; done",
+    "check:bsp": "npm run app2bsp && git diff --exit-code -- src",
+    "check": "npm run lint && npm run check:js && npm run check:bsp",
+    "test": "npm run check"
   },
   "devDependencies": {
     "@abaplint/cli": "^2.120.92"
