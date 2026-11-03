@@ -120,13 +120,12 @@ CLASS z2ui5_cl_ccc_sample_00 IMPLEMENTATION.
 
   METHOD on_event.
 
-    CASE client->get( )-event.
-      WHEN `PRESS`.
-        " the text arrived with the roundtrip through the two-way binding -
-        " echoing it back proves the event carries the edited model, not the
-        " state the view was rendered with
-        client->message_toast_display( |Badge pressed: { text }| ).
-    ENDCASE.
+    IF client->get( )-event = `PRESS`.
+      " the text arrived with the roundtrip through the two-way binding -
+      " echoing it back proves the event carries the edited model, not the
+      " state the view was rendered with
+      client->message_toast_display( |Badge pressed: { text }| ).
+    ENDIF.
 
   ENDMETHOD.
 
