@@ -162,7 +162,7 @@ abap2UI5 reserves the resourceRoot **`z2ui5_ccc`** in its `manifest.json`:
 so the module `z2ui5_ccc/cc/Example` is served from
 `/sap/bc/ui5_ui5/sap/z2ui5_ccc/cc/Example.js` — the BSP `Z2UI5_CCC` that this
 repository builds. In the standalone HTTP service, where there is no sibling
-BSP to resolve `../z2ui5_ccc/` against, `z2ui5_cl_http_handler` hands the
+BSP to resolve `../z2ui5_ccc/` against, `z2ui5_cl_ui5_http_handler` hands the
 absolute path to the frontend instead. All three delivery modes (BSP,
 launchpad, ICF service) therefore resolve it without configuration.
 
@@ -273,7 +273,7 @@ system demands it, but keep the resourceRoot.
 | `app/webapp/cc/Extension.js` | the bootstrap element — resource roots, libraries, icon fonts, stylesheets |
 | `app/webapp/cc/Example.js` | a template custom control (property, event, renderer) |
 | `app/webapp/Util.js` | `url`, `loadStyle`, `loadScript`, `logError`, `isDestroyed` |
-| `src/z2ui5_cl_ccc.clas.abap` | ABAP side — `xmlns( )`, `render( )`, `example( )`, `leaf( )` |
+| `src/z2ui5_cl_ccc.clas.abap` | ABAP side — `xmlns( )`, `render( )`, `example( )`, `tag( )` |
 | `src/00/z2ui5_cl_ccc_sample_00.clas.abap` | installation check app |
 | `tools/app2bsp.mjs` | `app/webapp` → the abapGit BSP artefacts under `src/01` |
 
