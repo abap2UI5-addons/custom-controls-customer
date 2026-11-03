@@ -30,5 +30,8 @@
   },
   "devDependencies": {
     "@abaplint/cli": "^2.120.92"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }
