@@ -34,6 +34,7 @@ A template repository for a company's own frontend artefacts in abap2UI5: a UI5 
 ## Requirements
 
 - Standard ABAP 7.50 or higher
+- NetWeaver 7.02 - 7.40: the downported branch 702
 - abap2UI5 in a version that reserves the z2ui5_ccc resourceRoot
 - abap2UI5/frontend (the frontend BSP) when running in BSP or launchpad mode
 

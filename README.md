@@ -45,7 +45,7 @@ never collide.
 
 - Standard ABAP 7.50 or higher
 - NetWeaver 7.02 - 7.40: the branch `702`, downported automatically from
-  `main` on every push - pull abap2UI5 from their `702` branches as well
+  `main` on every push - pull abap2UI5 from its `702` branch as well
 - [abap2UI5](https://github.com/abap2UI5/abap2UI5) - a version that reserves
   the `z2ui5_ccc` resourceRoot, installed in the backend. On an older
   framework the check app renders an empty page and the browser console shows
@@ -74,7 +74,7 @@ frontend resolves `z2ui5_ccc`.
 ```
 app/webapp/
 ├── index.html          the BSP start page - a note, this BSP has no UI
-├── Util.js             small helpers (url, loadStyle, loadScript, logError)
+├── Util.js             small helpers (url, loadStyle, loadScript, logError, isDestroyed)
 ├── cc/
 │   ├── Extension.js    THE FILE YOU EDIT - the four config blocks
 │   └── Example.js      a template custom control
@@ -117,10 +117,10 @@ table above, one for one.
 
 ```bash
 npm run app2bsp        # app/webapp -> src/01 (BSP pages, page directory, ICF nodes)
-npx abaplint abaplint.jsonc
+npm run check          # abaplint, the scripts parse, the BSP is up to date
 ```
 
-CI runs both and fails on a diff, so a stale BSP page can never ship old
+CI runs the same checks and fails on a diff, so a stale BSP page can never ship old
 JavaScript unnoticed.
 
 ### 4. Use it from ABAP
@@ -285,8 +285,9 @@ matches `app/webapp` (`npm run app2bsp` must leave no diff), and a syntax check
 of every JavaScript file under `app/webapp`. Run the same before you push:
 
 ```bash
+npm ci
 npm run app2bsp
-npx abaplint abaplint.jsonc
+npm run check
 ```
 
 ## Related
@@ -298,7 +299,7 @@ npx abaplint abaplint.jsonc
 
 ## Contributing
 
-Issues and pull requests are welcome.
+Issues and pull requests are welcome - see [CONTRIBUTING.md](CONTRIBUTING.md) for what CI checks.
 
 ## License
 
