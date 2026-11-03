@@ -24,7 +24,9 @@
     "check:js": "for f in $(find app/webapp -name '*.js'); do node --check \"$f\" || exit 1; done",
     "check:bsp": "npm run app2bsp && git diff --exit-code -- src",
     "check": "npm run lint && npm run check:js && npm run check:bsp",
-    "test": "npm run check"
+    "test": "npm run check",
+    "site": "npm run build --prefix site",
+    "site:dev": "npm run dev --prefix site"
   },
   "devDependencies": {
     "@abaplint/cli": "^2.120.92"

@@ -15,7 +15,7 @@ you. Fork it (or copy it into your own git host), put your files under
 Nothing in abap2UI5 or in its frontend BSP has to change, and no pull request
 against the framework is needed.
 
-> Part of [abap2UI5-addons](https://github.com/abap2UI5-addons) - addons and apps for [abap2UI5](https://github.com/abap2UI5/abap2UI5), installed with [abapGit](https://abapgit.org).
+> Part of [abap2UI5-addons](https://github.com/abap2UI5-addons) - addons and apps for [abap2UI5](https://github.com/abap2UI5/abap2UI5), installed with [abapGit](https://abapgit.org). Documentation: [abap2ui5-addons.github.io/custom-controls-customer](https://abap2ui5-addons.github.io/custom-controls-customer/).
 
 ## Why
 
