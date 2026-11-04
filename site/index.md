@@ -5,8 +5,8 @@ hero:
   name: "Custom Controls (customer)"
   text: "Template for your own controls, icon fonts and CSS, in your own BSP."
   image:
-    src: /favicon.png
-    alt: abap2UI5
+    src: /logo.svg
+    alt: abap2UI5 addons
   actions:
     - theme: brand
       text: Get started
