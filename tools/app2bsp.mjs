@@ -263,8 +263,27 @@ try {
   process.exit(1);
 }
 
+// A binary file passes the name check (`font.woff2` is a valid page name), and
+// reading it as UTF-8 would replace every invalid byte sequence with U+FFFD -
+// the page would import, and serve a corrupted font. So anything that is not
+// valid UTF-8 text is refused, as the README section "Binary artefacts" says.
+const utf8 = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
+
+const contents = new Map();
 for (const rel of files) {
-  const content = readFileSync(join(SOURCE_DIR, rel), "utf8");
+  try {
+    contents.set(rel, utf8.decode(readFileSync(join(SOURCE_DIR, rel))));
+  } catch {
+    console.error(
+      `${rel}: not UTF-8 text - BSP pages are text, so a binary file ` +
+        `cannot be one (see the README section "Binary artefacts")`,
+    );
+    process.exit(1);
+  }
+}
+
+for (const rel of files) {
+  const content = contents.get(rel);
   writeFileSync(
     join(TARGET_DIR, targetFileName(rel)),
     toBspPageFormat(content),
