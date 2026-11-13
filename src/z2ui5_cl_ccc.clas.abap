@@ -28,7 +28,7 @@ CLASS z2ui5_cl_ccc DEFINITION
 
     "! attribute list - one `key=value` string per attribute, e.g.
     "! a = VALUE #( ( `text=Hello` ) ( `width=100%` ) ). Split on the first `=`.
-    TYPES ty_t_attr TYPE STANDARD TABLE OF string WITH EMPTY KEY.
+    TYPES ty_t_attr TYPE STANDARD TABLE OF string WITH DEFAULT KEY.
 
     "! Declare the extension's XML namespace on a view or fragment root.
     "!
@@ -128,22 +128,38 @@ CLASS z2ui5_cl_ccc IMPLEMENTATION.
 
   METHOD example.
 
+    DATA temp1 TYPE z2ui5_cl_ccc=>ty_t_attr.
+    DATA temp2 LIKE LINE OF temp1.
+    DATA temp3 LIKE LINE OF temp1.
+    DATA temp4 LIKE LINE OF temp1.
+    CLEAR temp1.
+
+    temp2 = |text={ text }|.
+    INSERT temp2 INTO TABLE temp1.
+
+    temp3 = |color={ color }|.
+    INSERT temp3 INTO TABLE temp1.
+
+    temp4 = |press={ press }|.
+    INSERT temp4 INTO TABLE temp1.
     result = tag( view = view
                   name = `Example`
-                  a    = VALUE #( ( |text={ text }| )
-                                  ( |color={ color }| )
-                                  ( |press={ press }| ) ) ).
+                  a    = temp1 ).
 
   ENDMETHOD.
 
   METHOD tag.
+    DATA lv_attr LIKE LINE OF a.
+      DATA lv_off TYPE i.
 
     result = view->tag( n  = name
                         ns = c_ns ).
 
-    LOOP AT a INTO DATA(lv_attr).
 
-      DATA(lv_off) = find( val = lv_attr
+    LOOP AT a INTO lv_attr.
+
+
+      lv_off = find( val = lv_attr
                            sub = `=` ).
       " no `=` at all is a malformed attribute, `=value` a nameless one and
       " `key=` an unset one - all three would end up as an empty attribute
