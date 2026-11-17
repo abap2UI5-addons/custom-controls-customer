@@ -36,9 +36,28 @@ README.md is the user documentation; keep it and this file in step.
 
 ```sh
 npm ci
-npm run check   # abaplint, the scripts parse, the BSP is up to date
+npm run check   # abaplint (Standard and Cloud), the scripts parse, the BSP is up to date
 npm run site    # the documentation site into build/site
 ```
+
+## CI
+
+CI comes from the shared CI template of abap2UI5-addons (reusable workflows in
+[rap-ext](https://github.com/abap2UI5-addons/rap-ext/blob/main/.github/ci/README.md),
+pinned by commit in the `uses:` lines and moved by `bump-deps`):
+
+* `ci` - on every push to `main`, every pull request, weekly and by hand,
+  one job per check: `check / abaplint (./abaplint.jsonc)`,
+  `check / abaplint (.github/abaplint/abap_cloud.jsonc)` (ABAP Cloud),
+  `check / npm run check:js` and `check / npm run check:bsp` - these are the
+  required status checks of the branch protection. No abap2UI5-linter: its
+  render gate cannot know `z2ui5_ccc.cc.Example`, a control shipped from its
+  own BSP, and there is no `abap2ui5lint.jsonc`. No unit tests, no rename.
+* `ci-702` - on every push to `main` `npm run auto_downport`, a force-push
+  to the branch `702`, then abaplint on that branch
+  (`.github/abaplint/abap_702.jsonc`). Never commit to `702` by hand.
+* `deploy-pages`, `bump-deps` (monthly; the template pin moves only with the
+  `DEPS_TOKEN` secret). No sibling addon, so no `.github/deps.json`.
 
 English for code, comments, commit messages and pull requests. The wider
 rules live in abap2UI5's
