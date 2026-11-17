@@ -5,7 +5,8 @@
 [![abap2UI5](https://img.shields.io/badge/requires-abap2UI5-blue)](https://github.com/abap2UI5/abap2UI5)
 [![License](https://img.shields.io/github/license/abap2UI5-addons/custom-controls-customer)](LICENSE)
 <br>
-[![check](https://img.shields.io/github/actions/workflow/status/abap2UI5-addons/custom-controls-customer/check.yml?branch=main&label=check)](https://github.com/abap2UI5-addons/custom-controls-customer/actions/workflows/check.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/abap2UI5-addons/custom-controls-customer/ci.yaml?branch=main&label=CI)](https://github.com/abap2UI5-addons/custom-controls-customer/actions/workflows/ci.yaml)
+[![ABAP 7.02](https://img.shields.io/github/actions/workflow/status/abap2UI5-addons/custom-controls-customer/ci-702.yaml?branch=main&label=ABAP%207.02)](https://github.com/abap2UI5-addons/custom-controls-customer/actions/workflows/ci-702.yaml)
 
 **A template repository for your own frontend artefacts in abap2UI5.** A UI5
 reuse library, an icon font, corporate CSS, a custom control — served to
@@ -279,10 +280,14 @@ system demands it, but keep the resourceRoot.
 
 ## Development
 
-CI (`.github/workflows/check.yml`) runs on every push to `main` and every pull
-request: abaplint against `abaplint.jsonc`, a check that the BSP under `src/01`
-matches `app/webapp` (`npm run app2bsp` must leave no diff), and a syntax check
-of every JavaScript file under `app/webapp`. Run the same before you push:
+CI (`.github/workflows/ci.yaml`, from the shared CI template of
+abap2UI5-addons) runs on every push to `main`, every pull request and weekly:
+abaplint against `abaplint.jsonc` (Standard ABAP) and
+`.github/abaplint/abap_cloud.jsonc` (ABAP Cloud), a check that the BSP under
+`src/01` matches `app/webapp` (`npm run check:bsp`: `npm run app2bsp` must
+leave no diff), and a syntax check of every JavaScript file under `app/webapp`
+(`npm run check:js`). `ci-702` writes the downported branch `702` on every
+push to `main` and lints it. Run the same before you push:
 
 ```bash
 npm ci
