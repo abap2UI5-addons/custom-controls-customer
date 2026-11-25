@@ -36,13 +36,12 @@ A template repository for a company's own frontend artefacts in abap2UI5: a UI5 
 - Standard ABAP 7.50 or higher
 - NetWeaver 7.02 - 7.40: the downported branch 702
 - abap2UI5 in a version that reserves the z2ui5_ccc resourceRoot
-- abap2UI5/frontend (the frontend BSP) when running in BSP or launchpad mode
 
 ## Installation
 
 With [abapGit](https://abapgit.org), from [the repository](https://github.com/abap2UI5-addons/custom-controls-customer):
 
-- Install with abapGit in this order: abap2UI5 (and abap2UI5/frontend for BSP or launchpad mode), then your fork of this repository (branch main)
+- Install with abapGit in this order: abap2UI5 (it brings the BSP for BSP and launchpad mode itself), then your fork of this repository (branch main)
 - Fork or copy the repository first and put your artefacts under app/webapp/, then run npm run app2bsp and commit
 - Brings the ABAP classes, the BSP application Z2UI5_CCC and the two ICF nodes it is served from
 - Start ?app_start=z2ui5_cl_ccc_sample_00: if the badge renders, is styled and reacts to a click, the BSP is deployed
@@ -76,7 +75,6 @@ client->view_display( view->stringify( ) ).
 ## Links
 
 - [abap2UI5-addons/custom-controls](https://github.com/abap2UI5-addons/custom-controls)
-- [abap2UI5/frontend](https://github.com/abap2UI5/frontend)
 - [abap2UI5/samples](https://github.com/abap2UI5/samples)
 - [abap2UI5](https://github.com/abap2UI5/abap2UI5)
 - [The repository](https://github.com/abap2UI5-addons/custom-controls-customer) - issues and pull requests welcome

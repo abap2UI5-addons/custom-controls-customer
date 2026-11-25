@@ -30,7 +30,7 @@
     "site:dev": "npm run dev --prefix site"
   },
   "devDependencies": {
-    "@abaplint/cli": "^2.120.92"
+    "@abaplint/cli": "^2.120.120"
   },
   "engines": {
     "node": ">=22"
