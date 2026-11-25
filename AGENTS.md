@@ -17,6 +17,16 @@ README.md is the user documentation; keep it and this file in step.
 | `src/00/` | The sample app `z2ui5_cl_ccc_sample_00` |
 | `site/` | The documentation site (VitePress) - https://abap2ui5-addons.github.io/custom-controls-customer/ |
 
+## Branch DEV
+
+`main` is the template. `DEV` carries the configuration of the S5S
+installation (the /KRO/ apps): the icon font "my-icons" of the reuse library
+in the BSP `ZREUSEICONS` (`RESOURCE_ROOTS` and `LIBRARIES` in
+`cc/Extension.js`) and the /KRO/ stylesheet (`css/style.css`: row colours of
+the layout-management tables, column-sort headers, phone padding, popover
+size). The /KRO/ views declare the extension in
+`/KRO/UI501_CL_APP_VIEW=>xml_build_page` and carry the class `kroApp`.
+
 ## Rules
 
 - **Edit `app/webapp/`, then run `npm run app2bsp` and commit both.** CI

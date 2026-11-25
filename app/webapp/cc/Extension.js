@@ -36,7 +36,10 @@ sap.ui.define(
     // Artefacts that live in THIS BSP need no entry: abap2UI5 registers
     // z2ui5_ccc itself.
     const RESOURCE_ROOTS = {
-      // "com.myorg.reuselib": "/sap/bc/ui5_ui5/sap/zreuseicons/",
+      // the reuse library with the icon font "my-icons" (BSP ZREUSEICONS) -
+      // kept in its own BSP, see the README "Keeping an existing
+      // reuse-library BSP"
+      "com.myorg.reuselib": "/sap/bc/ui5_ui5/sap/zreuseicons/",
     };
 
     // ------------------------------------------------------------------
@@ -47,7 +50,8 @@ sap.ui.define(
     // register an icon font. Replaces the "libs" entry in the framework's
     // manifest.json.
     const LIBRARIES = [
-      // "com.myorg.reuselib",
+      // its library.js registers the icon font: sap-icon://my-icons/<name>
+      "com.myorg.reuselib",
     ];
 
     // ------------------------------------------------------------------
@@ -118,6 +122,31 @@ sap.ui.define(
       }
     }
 
+    // A library loads asynchronously, so a view rendered before it arrived
+    // shows its sap-icon://<collection>/<name> icons blank - the IconPool
+    // did not know the collection yet. Once a library is there, the
+    // controls that name such an icon render again. Element.registry is in
+    // UI5 1.67 and later; without it the icons appear with the next render.
+    const COLLECTION_ICON = /^sap-icon:\/\/[^/]+\/./;
+
+    function rerenderCollectionIcons() {
+      const Element = sap.ui.require("sap/ui/core/Element");
+      const registry = Element?.registry;
+      if (!registry?.forEach) return;
+      registry.forEach((element) => {
+        try {
+          const props = element.mProperties || {};
+          const named = Object.keys(props).some(
+            (key) =>
+              typeof props[key] === "string" && COLLECTION_ICON.test(props[key]),
+          );
+          if (named && !Util.isDestroyed(element)) element.invalidate();
+        } catch (e) {
+          Util.logError("Extension: could not re-render an icon", e);
+        }
+      });
+    }
+
     function install() {
       if (installed) return;
       installed = true;
@@ -144,11 +173,14 @@ sap.ui.define(
       // Libraries load asynchronously and nothing here waits for them: a
       // library that only registers icons has no control the view could
       // reference, and one that does have controls is awaited by the XML
-      // template processor anyway when the view names its namespace.
+      // template processor anyway when the view names its namespace. The
+      // icons a library registers are drawn again once it is there.
       LIBRARIES.forEach((name) =>
-        loadLibrary(name).catch((e) =>
-          Util.logError(`Extension: library ${name} failed to load`, e),
-        ),
+        loadLibrary(name)
+          .then(rerenderCollectionIcons)
+          .catch((e) =>
+            Util.logError(`Extension: library ${name} failed to load`, e),
+          ),
       );
     }
 
