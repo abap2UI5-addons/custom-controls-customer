@@ -30,9 +30,8 @@ own BSP by hand, in four places:
 | `View1.view.xml` | `xmlns:custom="com.myorg.reuselib"` |
 | `View1.controller.js` | `sap.ui.define([… "com/myorg/reuselib/library"])` |
 
-All four are **generated** from `app/webapp` in the abap2UI5 repository and
-force-overwritten in [abap2UI5/frontend](https://github.com/abap2UI5/frontend)
-on every framework update — so the patch survives exactly until the next
+All four are **generated** in the abap2UI5 repository and part of its BSP
+`Z2UI5`, which is force-overwritten on every framework update — so the patch survives exactly until the next
 upgrade, and then the icons are gone with no error message.
 
 This repository is the supported place for those artefacts instead. It is the
@@ -51,14 +50,11 @@ never collide.
   the `z2ui5_ccc` resourceRoot, installed in the backend. On an older
   framework the check app renders an empty page and the browser console shows
   a failed request for `z2ui5_ccc/cc/Extension.js`.
-- [abap2UI5/frontend](https://github.com/abap2UI5/frontend) — the frontend BSP,
-  when running in BSP or launchpad mode
 
 **Steps** - with [abapGit](https://abapgit.org), in this order:
 
-1. [abap2UI5](https://github.com/abap2UI5/abap2UI5) (and
-   [abap2UI5/frontend](https://github.com/abap2UI5/frontend) for BSP or
-   launchpad mode)
+1. [abap2UI5](https://github.com/abap2UI5/abap2UI5) - it brings the ICF node
+   and the BSP `Z2UI5` for BSP and launchpad mode itself
 2. fork this repository (or copy it into your own git host) and put your
    artefacts in - see [Usage](#usage)
 3. your fork (branch `main`) - it brings the ABAP classes, the BSP
