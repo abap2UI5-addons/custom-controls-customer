@@ -36,10 +36,7 @@ sap.ui.define(
     // Artefacts that live in THIS BSP need no entry: abap2UI5 registers
     // z2ui5_ccc itself.
     const RESOURCE_ROOTS = {
-      // the reuse library with the icon font "my-icons" (BSP ZREUSEICONS) -
-      // kept in its own BSP, see the README "Keeping an existing
-      // reuse-library BSP"
-      "com.myorg.reuselib": "/sap/bc/ui5_ui5/sap/zreuseicons/",
+      // "com.myorg.reuselib": "/sap/bc/ui5_ui5/sap/zreuseicons/",
     };
 
     // ------------------------------------------------------------------
@@ -50,8 +47,7 @@ sap.ui.define(
     // register an icon font. Replaces the "libs" entry in the framework's
     // manifest.json.
     const LIBRARIES = [
-      // its library.js registers the icon font: sap-icon://my-icons/<name>
-      "com.myorg.reuselib",
+      // "com.myorg.reuselib",
     ];
 
     // ------------------------------------------------------------------
@@ -76,11 +72,59 @@ sap.ui.define(
     ];
 
     // ------------------------------------------------------------------
+    // 3b. Icons of a font this BSP serves itself
+    // ------------------------------------------------------------------
+    // sap-icon://<collectionName>/<name> for a font whose @font-face is in
+    // one of the STYLESHEETS below (a base64 data URI - BSP pages are text).
+    // Registered synchronously in init(), so the icons of the very first
+    // view resolve; the browser draws the glyphs once the font is there.
+    // The S5S apps: "my-icons", formerly the reuse library in ZREUSEICONS
+    // (com.myorg.reuselib, its library.js and MyCustomFontFamily.json).
+    const ICONS = [
+      {
+        collectionName: "my-icons",
+        fontFamily: "MyCustomFontFamily",
+        icons: {
+          bestandsInfoHU: "e900",
+          bestandsInfoLager: "e901",
+          bestandsInfoMat: "e902",
+          bestandsInfoMat1: "e903",
+          bewegungAbgeschlossen: "e904",
+          bewegungAbgeschlossen1: "e905",
+          fordertechnikaufladen: "e906",
+          fordertechnikentnehmen: "e907",
+          kommisionierHUbeladen: "e908",
+          KommisionierHUentnehmen: "e909",
+          Lageraufgabequitiert: "e90a",
+          Lageraufgabequitiert1: "e90b",
+          Lagerauslagern: "e90c",
+          Lagereinlagern: "e90d",
+          LKWausladen: "e90e",
+          LKWbeladen: "e90f",
+          Regal: "e910",
+          Regal2: "e911",
+          Regal3: "e912",
+          Regal4: "e913",
+          Regal5: "e914",
+          Stapler: "e915",
+          Staplereinlagern: "e916",
+          Staplerentnehmen: "e917",
+          StaplerInfo: "e918",
+          StaplerLogin: "e919",
+          StaplerLogout: "e91a",
+          StaplerLogout1: "e91b",
+          umpacken: "e91c",
+          umpacken1: "e91d",
+        },
+      },
+    ];
+
+    // ------------------------------------------------------------------
     // 4. Stylesheets
     // ------------------------------------------------------------------
     // Own CSS classes, @font-face rules, corporate colours. Served from this
     // BSP by default; an absolute URL works too.
-    const STYLESHEETS = [Util.url("css/style.css")];
+    const STYLESHEETS = [Util.url("css/style.css"), Util.url("css/icons.css")];
 
     // ------------------------------------------------------------------
 
@@ -163,6 +207,21 @@ sap.ui.define(
       }
 
       ICON_FONTS.forEach(registerFont);
+
+      // the positional addIcon( name, collection, fontFamily, content ) is
+      // the form every UI5 release from 1.71 on takes (and the one a
+      // reuse library's library.js uses); an icon the IconPool already
+      // knows is kept
+      ICONS.forEach((set) =>
+        Object.entries(set.icons).forEach(([name, content]) => {
+          try {
+            if (IconPool.getIconInfo(`sap-icon://${set.collectionName}/${name}`)) return;
+            IconPool.addIcon(name, set.collectionName, set.fontFamily, content);
+          } catch (e) {
+            Util.logError(`Extension: could not add icon ${set.collectionName}/${name}`, e);
+          }
+        }),
+      );
 
       STYLESHEETS.forEach((href) =>
         Util.loadStyle(href).catch((e) =>

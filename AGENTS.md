@@ -20,8 +20,9 @@ README.md is the user documentation; keep it and this file in step.
 ## Branch DEV
 
 `main` is the template. `DEV` carries the configuration of the S5S
-installation (the /KRO/ apps): the icon font "my-icons" of the reuse library
-in the BSP `ZREUSEICONS` (`RESOURCE_ROOTS` and `LIBRARIES` in
+installation (the /KRO/ apps): the icon font "my-icons" (taken over from the
+reuse-library BSP `ZREUSEICONS`: the WOFF as a base64 data URI in
+`css/icons.css`, the 30 icon names and code points in `ICONS` of
 `cc/Extension.js`) and the /KRO/ stylesheet (`css/style.css`: row colours of
 the layout-management tables, column-sort headers, phone padding, popover
 size). The /KRO/ views declare the extension in
