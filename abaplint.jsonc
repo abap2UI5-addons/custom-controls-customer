@@ -29,9 +29,7 @@
   },
   "rules": {
     // statements with a successor that this repository no longer uses -
-    // listed so they do not come back (abaplint 2.120.116+). The
-    // widely used READ TABLE / APPEND / CREATE OBJECT / ... follow
-    // once the code no longer has them
+    // listed so they do not come back (abaplint 2.120.116+).
     "forbidden_statement": {
       "statements": [
         "Describe",
@@ -44,7 +42,19 @@
         "TypePools",
         "Perform",
         "Form",
-        "Write"
+        "Write",
+        "ReadTable",
+        "Append",
+        "CreateObject",
+        "MoveCorresponding",
+        "GetReference",
+        "Concatenate",
+        "Condense",
+        "Translate",
+        "Replace",
+        "Find",
+        "Shift",
+        "Check"
       ]
     },
     "begin_end_names": true,
