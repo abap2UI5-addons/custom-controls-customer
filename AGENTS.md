@@ -17,16 +17,16 @@ README.md is the user documentation; keep it and this file in step.
 | `src/00/` | The sample app `z2ui5_cl_ccc_sample_00` |
 | `site/` | The documentation site (VitePress) - https://abap2ui5-addons.github.io/custom-controls-customer/ |
 
-## Branch DEV
+## A template, forked per customer
 
-`main` is the template. `DEV` carries the configuration of the S5S
-installation (the /KRO/ apps): the icon font "my-icons" (taken over from the
-reuse-library BSP `ZREUSEICONS`: the WOFF as a base64 data URI in
-`css/icons.css`, the 30 icon names and code points in `ICONS` of
-`cc/Extension.js`) and the /KRO/ stylesheet (`css/style.css`: row colours of
-the layout-management tables, column-sort headers, phone padding, popover
-size). The /KRO/ views declare the extension in
-`/KRO/UI501_CL_APP_VIEW=>xml_build_page` and carry the class `kroApp`.
+`main` is the template and stays generic: no customer's font, icons,
+colours or class names. A customer forks the repository (or copies it into
+their own git host) and adds their files there - their icon font in a
+`css/icons.css` plus its names in `ICONS` of `cc/Extension.js`, their CSS in
+`css/style.css`, their own controls under `cc/`. Customer files never come
+back to this repository; a feature that every customer needs (like the
+`ICONS` mechanism, which came from a customer installation) does, as a
+generic change with an empty or commented-out example.
 
 ## Rules
 

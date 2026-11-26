@@ -18,6 +18,64 @@ against the framework is needed.
 
 > Part of [abap2UI5-addons](https://github.com/abap2UI5-addons) - addons and apps for [abap2UI5](https://github.com/abap2UI5/abap2UI5), installed with [abapGit](https://abapgit.org). Documentation: [abap2ui5-addons.github.io/custom-controls-customer](https://abap2ui5-addons.github.io/custom-controls-customer/).
 
+## Make it yours in five steps
+
+You do not need to know UI5 internals or touch abap2UI5 for this. If you can
+edit a file and use abapGit, you can do it.
+
+1. **Fork this repository** on GitHub (button "Fork" at the top right), or
+   copy it into your own git host. Your fork is yours: the files you add stay
+   there and never have to go back here.
+2. **Put your files under `app/webapp/`** - your CSS into `css/style.css`,
+   an icon font into a new `css/icons.css`, a custom control into `cc/`.
+3. **Register them in `app/webapp/cc/Extension.js`.** At the top there are
+   five short lists - resource roots, libraries, icon fonts, icons,
+   stylesheets. Every list has a commented-out example; copy it and fill in
+   your names.
+4. **Build and check:** `npm ci`, then `npm run app2bsp` (turns
+   `app/webapp/` into the BSP files under `src/01`) and `npm run check`.
+   Commit both `app/webapp/` and `src/01`.
+5. **Install** abap2UI5 first, then your fork, with abapGit. Open
+   `?app_start=z2ui5_cl_ccc_sample_00` - if the badge shows and reacts to a
+   click, everything is in place. In your apps, call
+   `z2ui5_cl_ccc=>render( page )` once per view (see [Use it from
+   ABAP](#4-use-it-from-abap)).
+
+**Want to see a filled-in fork?** The branch
+[`example`](https://github.com/abap2UI5-addons/custom-controls-customer/tree/example)
+is a real customer installation (an icon font with 30 icons and the
+customer's stylesheet), kept to look at.
+
+That's it. When this template gets an update, pull it into your fork
+("Sync fork" on GitHub) - your own files are not touched by it, as long as
+you only added files and filled in the lists in `Extension.js`.
+
+**Example - your own icon font.** Turn the font into a base64 data URI and
+write it into `css/icons.css`:
+
+```css
+@font-face {
+  font-family: "MyCustomFontFamily";
+  src: url("data:font/woff;base64,d09GRgABAAAAA...") format("woff");
+}
+```
+
+then add `Util.url("css/icons.css")` to `STYLESHEETS` and the icon names with
+their code points to `ICONS` in `Extension.js`:
+
+```js
+const ICONS = [{
+  collectionName: "my-icons",
+  fontFamily: "MyCustomFontFamily",
+  icons: { Regal: "e910", Stapler: "e915" },
+}];
+```
+
+Every view that calls `z2ui5_cl_ccc=>render( )` can now use
+`sap-icon://my-icons/Regal`. A BSP page is text, so a font has to be a data
+URI; a long base64 string may be split over several lines with a `\` at the
+end of each line (lines stay below 255 characters).
+
 ## Why
 
 Adding a UI5 reuse library to abap2UI5 used to mean patching the framework's
@@ -73,7 +131,7 @@ app/webapp/
 ├── index.html          the BSP start page - a note, this BSP has no UI
 ├── Util.js             small helpers (url, loadStyle, loadScript, logError, isDestroyed)
 ├── cc/
-│   ├── Extension.js    THE FILE YOU EDIT - the four config blocks
+│   ├── Extension.js    THE FILE YOU EDIT - the five config lists
 │   └── Example.js      a template custom control
 └── css/
     └── style.css       your CSS
@@ -107,8 +165,9 @@ const ICON_FONTS = [{
 const STYLESHEETS = [Util.url("css/style.css")];
 ```
 
-Those four blocks are the replacement for the four framework patches in the
-table above, one for one.
+Those blocks are the replacement for the four framework patches in the
+table above. A fifth list, `ICONS`, registers the icons of a font this BSP
+serves itself (see [Make it yours](#make-it-yours-in-five-steps)).
 
 ### 3. Regenerate and commit
 
@@ -210,9 +269,10 @@ ways work:
   }
   ```
 
-  Note that the UI5 `IconPool` needs the font file itself at `fontURI`, so for
-  `sap-icon://` icons use the MIME route below; a data URI covers the CSS-class
-  usage (`<span class="my-icons">`).
+  With the names listed in `ICONS` of `Extension.js` such a font also serves
+  `sap-icon://` icons - see [Make it yours](#make-it-yours-in-five-steps).
+  (`ICON_FONTS` is different: there the UI5 `IconPool` loads the font file
+  itself from `fontURI`, so that route needs the MIME objects below.)
 
 * **MIME objects** — upload the font into the BSP with
   `/UI5/UI5_REPOSITORY_LOAD` (report `/UI5/UI5_REPOSITORY_LOAD` in `SE38`) or
