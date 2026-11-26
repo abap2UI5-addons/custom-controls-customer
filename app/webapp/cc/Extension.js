@@ -78,45 +78,14 @@ sap.ui.define(
     // one of the STYLESHEETS below (a base64 data URI - BSP pages are text).
     // Registered synchronously in init(), so the icons of the very first
     // view resolve; the browser draws the glyphs once the font is there.
-    // The S5S apps: "my-icons", formerly the reuse library in ZREUSEICONS
-    // (com.myorg.reuselib, its library.js and MyCustomFontFamily.json).
+    // Example: icons.css holds the @font-face of "MyCustomFontFamily" and is
+    // added to STYLESHEETS below.
     const ICONS = [
-      {
-        collectionName: "my-icons",
-        fontFamily: "MyCustomFontFamily",
-        icons: {
-          bestandsInfoHU: "e900",
-          bestandsInfoLager: "e901",
-          bestandsInfoMat: "e902",
-          bestandsInfoMat1: "e903",
-          bewegungAbgeschlossen: "e904",
-          bewegungAbgeschlossen1: "e905",
-          fordertechnikaufladen: "e906",
-          fordertechnikentnehmen: "e907",
-          kommisionierHUbeladen: "e908",
-          KommisionierHUentnehmen: "e909",
-          Lageraufgabequitiert: "e90a",
-          Lageraufgabequitiert1: "e90b",
-          Lagerauslagern: "e90c",
-          Lagereinlagern: "e90d",
-          LKWausladen: "e90e",
-          LKWbeladen: "e90f",
-          Regal: "e910",
-          Regal2: "e911",
-          Regal3: "e912",
-          Regal4: "e913",
-          Regal5: "e914",
-          Stapler: "e915",
-          Staplereinlagern: "e916",
-          Staplerentnehmen: "e917",
-          StaplerInfo: "e918",
-          StaplerLogin: "e919",
-          StaplerLogout: "e91a",
-          StaplerLogout1: "e91b",
-          umpacken: "e91c",
-          umpacken1: "e91d",
-        },
-      },
+      // {
+      //   collectionName: "my-icons",
+      //   fontFamily: "MyCustomFontFamily",
+      //   icons: { Regal: "e910", Stapler: "e915" },
+      // },
     ];
 
     // ------------------------------------------------------------------
@@ -124,7 +93,7 @@ sap.ui.define(
     // ------------------------------------------------------------------
     // Own CSS classes, @font-face rules, corporate colours. Served from this
     // BSP by default; an absolute URL works too.
-    const STYLESHEETS = [Util.url("css/style.css"), Util.url("css/icons.css")];
+    const STYLESHEETS = [Util.url("css/style.css")];
 
     // ------------------------------------------------------------------
 
