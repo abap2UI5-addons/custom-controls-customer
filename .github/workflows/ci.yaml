@@ -10,12 +10,14 @@ name: ci
 #                 check:bsp - the generated BSP in src/01 matches
 #                 npm run app2bsp (a stale page would deploy old JavaScript
 #                 without anyone noticing)
+#   rename        the namespace rename (npm run rename) - without the BSP in
+#                 src/01, see AGENTS.md "Namespace rename"
 #
 # No abap2UI5-linter here: its headless view render validates views against
 # the UI5 metadata snapshot, which does not know z2ui5_ccc.cc.Example - a
 # control shipped from its own BSP is invisible to it by definition - and the
-# repository has no abap2ui5lint.jsonc. No ABAP Unit tests and no rename
-# script, so no unit and no rename job either.
+# repository has no abap2ui5lint.jsonc. No ABAP Unit tests, so no unit job
+# either.
 
 on:
   push:
@@ -46,4 +48,5 @@ jobs:
       abaplint: '["./abaplint.jsonc", ".github/abaplint/abap_cloud.jsonc"]'
       npm-scripts: '["check:js", "check:bsp"]'
       abap2ui5lint: false
+      rename: true
       canary: ${{ github.event_name == 'schedule' }}
