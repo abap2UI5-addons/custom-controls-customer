@@ -1,0 +1,40 @@
+name: build-example
+
+# The branch `example` (a real customer example, kept to look at): on every
+# push to main, tools/build-example.mjs applies the folder example/ to main,
+# the result is checked (abaplint standard and cloud, the scripts parse) and
+# force-pushed to `example` - always main plus one commit. Never commit to
+# `example` by hand; change example/ on main instead.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-example
+  cancel-in-progress: true
+
+jobs:
+  build-example:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - run: npm ci
+      - run: node tools/build-example.mjs
+      - run: npm run lint && npm run check:cloud && npm run check:js
+      - name: commit and push to example
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "example: built from main ${GITHUB_SHA::7} (tools/build-example.mjs)"
+          git push --force origin HEAD:example
