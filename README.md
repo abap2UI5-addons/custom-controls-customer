@@ -41,6 +41,11 @@ edit a file and use abapGit, you can do it.
    `z2ui5_cl_ccc=>render( page )` once per view (see [Use it from
    ABAP](#4-use-it-from-abap)).
 
+**Want to see a filled-in fork?** The branch
+[`example`](https://github.com/abap2UI5-addons/custom-controls-customer/tree/example)
+is a real customer installation (an icon font with 30 icons and the
+customer's stylesheet), kept to look at.
+
 That's it. When this template gets an update, pull it into your fork
 ("Sync fork" on GitHub) - your own files are not touched by it, as long as
 you only added files and filled in the lists in `Extension.js`.
