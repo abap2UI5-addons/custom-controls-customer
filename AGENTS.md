@@ -28,6 +28,14 @@ back to this repository; a feature that every customer needs (like the
 `ICONS` mechanism, which came from a customer installation) does, as a
 generic change with an empty or commented-out example.
 
+`example/` is one such customer, anonymous, kept to look at: its files under
+their repository paths, its icon names in `example/icons.json`. The workflow
+`build-example` runs `tools/build-example.mjs` on every push to `main` and
+force-pushes the result to the branch `example` (main plus one commit). Never
+commit to `example` by hand; change `example/` here. `example/` is outside
+`src/`, so the checks of `main` do not see it - `build-example` lints the
+built branch.
+
 ## Rules
 
 - **Edit `app/webapp/`, then run `npm run app2bsp` and commit both.** CI
@@ -69,6 +77,8 @@ pinned by commit in the `uses:` lines and moved by `bump-deps`):
   to the branch `702`, then abaplint on that branch
   (`.github/abaplint/abap_702.jsonc`). Never commit to `702` by hand.
 * `build-rename` (manual) - pushes the renamed branch `rename_<name>`.
+* `build-example` - on every push to `main` the branch `example` from the
+  folder `example/` (see above). Never commit to `example` by hand.
 * `deploy-pages`, `bump-deps` (monthly; the template pin moves only with the
   `DEPS_TOKEN` secret). No sibling addon, so no `.github/deps.json`.
 

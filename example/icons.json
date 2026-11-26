@@ -1,0 +1,44 @@
+{
+  "$comment": "Injected into ICONS of app/webapp/cc/Extension.js by tools/build-example.mjs; css/icons.css is added to STYLESHEETS.",
+  "icons": [
+    {
+      "collectionName": "my-icons",
+      "fontFamily": "MyCustomFontFamily",
+      "icons": {
+        "bestandsInfoHU": "e900",
+        "bestandsInfoLager": "e901",
+        "bestandsInfoMat": "e902",
+        "bestandsInfoMat1": "e903",
+        "bewegungAbgeschlossen": "e904",
+        "bewegungAbgeschlossen1": "e905",
+        "fordertechnikaufladen": "e906",
+        "fordertechnikentnehmen": "e907",
+        "kommisionierHUbeladen": "e908",
+        "KommisionierHUentnehmen": "e909",
+        "Lageraufgabequitiert": "e90a",
+        "Lageraufgabequitiert1": "e90b",
+        "Lagerauslagern": "e90c",
+        "Lagereinlagern": "e90d",
+        "LKWausladen": "e90e",
+        "LKWbeladen": "e90f",
+        "Regal": "e910",
+        "Regal2": "e911",
+        "Regal3": "e912",
+        "Regal4": "e913",
+        "Regal5": "e914",
+        "Stapler": "e915",
+        "Staplereinlagern": "e916",
+        "Staplerentnehmen": "e917",
+        "StaplerInfo": "e918",
+        "StaplerLogin": "e919",
+        "StaplerLogout": "e91a",
+        "StaplerLogout1": "e91b",
+        "umpacken": "e91c",
+        "umpacken1": "e91d"
+      }
+    }
+  ],
+  "stylesheets": [
+    "css/icons.css"
+  ]
+}
