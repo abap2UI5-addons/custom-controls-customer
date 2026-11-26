@@ -37,6 +37,17 @@
     <item>
      <ATTRIBUTES>
       <APPLNAME>Z2UI5_CCC</APPLNAME>
+      <PAGEKEY>CSS/ICONS.CSS</PAGEKEY>
+      <PAGENAME>css/icons.css</PAGENAME>
+      <PAGETYPE>X</PAGETYPE>
+      <LAYOUTLANGU>E</LAYOUTLANGU>
+      <VERSION>A</VERSION>
+      <LANGU>E</LANGU>
+     </ATTRIBUTES>
+    </item>
+    <item>
+     <ATTRIBUTES>
+      <APPLNAME>Z2UI5_CCC</APPLNAME>
       <PAGEKEY>CSS/STYLE.CSS</PAGEKEY>
       <PAGENAME>css/style.css</PAGENAME>
       <PAGETYPE>X</PAGETYPE>

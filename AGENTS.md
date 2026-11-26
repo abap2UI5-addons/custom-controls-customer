@@ -17,6 +17,17 @@ README.md is the user documentation; keep it and this file in step.
 | `src/00/` | The sample app `z2ui5_cl_ccc_sample_00` |
 | `site/` | The documentation site (VitePress) - https://abap2ui5-addons.github.io/custom-controls-customer/ |
 
+## Branch DEV
+
+`main` is the template. `DEV` carries the configuration of the S5S
+installation (the /KRO/ apps): the icon font "my-icons" (taken over from the
+reuse-library BSP `ZREUSEICONS`: the WOFF as a base64 data URI in
+`css/icons.css`, the 30 icon names and code points in `ICONS` of
+`cc/Extension.js`) and the /KRO/ stylesheet (`css/style.css`: row colours of
+the layout-management tables, column-sort headers, phone padding, popover
+size). The /KRO/ views declare the extension in
+`/KRO/UI501_CL_APP_VIEW=>xml_build_page` and carry the class `kroApp`.
+
 ## Rules
 
 - **Edit `app/webapp/`, then run `npm run app2bsp` and commit both.** CI
@@ -52,12 +63,31 @@ pinned by commit in the `uses:` lines and moved by `bump-deps`):
   `check / npm run check:js` and `check / npm run check:bsp` - these are the
   required status checks of the branch protection. No abap2UI5-linter: its
   render gate cannot know `z2ui5_ccc.cc.Example`, a control shipped from its
-  own BSP, and there is no `abap2ui5lint.jsonc`. No unit tests, no rename.
+  own BSP, and there is no `abap2ui5lint.jsonc`. No unit tests. `check /
+  rename` is the namespace rename check (below).
 * `ci-702` - on every push to `main` `npm run auto_downport`, a force-push
   to the branch `702`, then abaplint on that branch
   (`.github/abaplint/abap_702.jsonc`). Never commit to `702` by hand.
+* `build-rename` (manual) - pushes the renamed branch `rename_<name>`.
 * `deploy-pages`, `bump-deps` (monthly; the template pin moves only with the
   `DEPS_TOKEN` secret). No sibling addon, so no `.github/deps.json`.
+
+## Namespace rename
+
+`npm run rename` (CI: `check / rename`) and the manual `build-rename`
+workflow are abap2UI5's namespace rename - `.github/scripts/rename.mjs`, the
+same file in every repository that has one: every `z2ui5_` object becomes
+`<name>_...` or `/<ns>/...` (at most 10 characters), and so does every
+reference to abap2UI5, which is renamed along. A customer who copies this
+template into their own namespace by hand does not need it; it is for an
+installation renamed as a whole. Not complete yet - `package.json` `config`,
+printed on every run:
+
+- **`src/01` is not renamed** (`renameSkip`): abaplint cannot rename a BSP
+  (WAPA) - abap2UI5 backlog item `abaplint-rename-wapa`, abaplint PR #4721 -
+  and the abap2UI5 frontend reserves the resource root `z2ui5_ccc`.
+- **One literal stays** (`renameLiterals`): `z2ui5_cl_ccc=>c_ns`, that
+  resource root. Any other literal naming a `z2ui5_` object fails the check.
 
 English for code, comments, commit messages and pull requests. The wider
 rules live in abap2UI5's

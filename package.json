@@ -20,6 +20,7 @@
     "abaplintpathfix": "sed -i 's|\"/\\.\\./\\.\\./src/|\"/src/|g' abaplint.jsonc",
     "downport": "abaplint --fix .github/abaplint/abap_702.jsonc && npm run syfixes",
     "auto_downport": "(abaplint --fix .github/abaplint/abap_702.jsonc || true) && npm run syfixes && npm run strip_trailing_ws && abaplint .github/abaplint/abap_702.jsonc && cp -f .github/abaplint/abap_702.jsonc abaplint.jsonc && npm run abaplintpathfix",
+    "rename": "node .github/scripts/rename.mjs",
     "lint": "abaplint abaplint.jsonc",
     "check:cloud": "abaplint .github/abaplint/abap_cloud.jsonc",
     "check:js": "for f in $(find app/webapp -name '*.js'); do node --check \"$f\" || exit 1; done",
@@ -34,5 +35,13 @@
   },
   "engines": {
     "node": ">=22"
+  },
+  "config": {
+    "renameSkip": {
+      "src/01/": "the BSP Z2UI5_CCC (WAPA) and its two ICF nodes - abaplint 2.120.120 has no WAPA renamer (abap2UI5 backlog item abaplint-rename-wapa, abaplint PR #4721), and the abap2UI5 frontend reserves the resource root z2ui5_ccc; install the BSP unrenamed"
+    },
+    "renameLiterals": {
+      "z2ui5_ccc": "z2ui5_cl_ccc=>c_ns, the resource root of the BSP that src/01 keeps unrenamed (abaplint-rename-wapa)"
+    }
   }
 }

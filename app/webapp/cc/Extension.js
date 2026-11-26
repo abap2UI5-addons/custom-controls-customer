@@ -72,11 +72,59 @@ sap.ui.define(
     ];
 
     // ------------------------------------------------------------------
+    // 3b. Icons of a font this BSP serves itself
+    // ------------------------------------------------------------------
+    // sap-icon://<collectionName>/<name> for a font whose @font-face is in
+    // one of the STYLESHEETS below (a base64 data URI - BSP pages are text).
+    // Registered synchronously in init(), so the icons of the very first
+    // view resolve; the browser draws the glyphs once the font is there.
+    // The S5S apps: "my-icons", formerly the reuse library in ZREUSEICONS
+    // (com.myorg.reuselib, its library.js and MyCustomFontFamily.json).
+    const ICONS = [
+      {
+        collectionName: "my-icons",
+        fontFamily: "MyCustomFontFamily",
+        icons: {
+          bestandsInfoHU: "e900",
+          bestandsInfoLager: "e901",
+          bestandsInfoMat: "e902",
+          bestandsInfoMat1: "e903",
+          bewegungAbgeschlossen: "e904",
+          bewegungAbgeschlossen1: "e905",
+          fordertechnikaufladen: "e906",
+          fordertechnikentnehmen: "e907",
+          kommisionierHUbeladen: "e908",
+          KommisionierHUentnehmen: "e909",
+          Lageraufgabequitiert: "e90a",
+          Lageraufgabequitiert1: "e90b",
+          Lagerauslagern: "e90c",
+          Lagereinlagern: "e90d",
+          LKWausladen: "e90e",
+          LKWbeladen: "e90f",
+          Regal: "e910",
+          Regal2: "e911",
+          Regal3: "e912",
+          Regal4: "e913",
+          Regal5: "e914",
+          Stapler: "e915",
+          Staplereinlagern: "e916",
+          Staplerentnehmen: "e917",
+          StaplerInfo: "e918",
+          StaplerLogin: "e919",
+          StaplerLogout: "e91a",
+          StaplerLogout1: "e91b",
+          umpacken: "e91c",
+          umpacken1: "e91d",
+        },
+      },
+    ];
+
+    // ------------------------------------------------------------------
     // 4. Stylesheets
     // ------------------------------------------------------------------
     // Own CSS classes, @font-face rules, corporate colours. Served from this
     // BSP by default; an absolute URL works too.
-    const STYLESHEETS = [Util.url("css/style.css")];
+    const STYLESHEETS = [Util.url("css/style.css"), Util.url("css/icons.css")];
 
     // ------------------------------------------------------------------
 
@@ -118,6 +166,31 @@ sap.ui.define(
       }
     }
 
+    // A library loads asynchronously, so a view rendered before it arrived
+    // shows its sap-icon://<collection>/<name> icons blank - the IconPool
+    // did not know the collection yet. Once a library is there, the
+    // controls that name such an icon render again. Element.registry is in
+    // UI5 1.67 and later; without it the icons appear with the next render.
+    const COLLECTION_ICON = /^sap-icon:\/\/[^/]+\/./;
+
+    function rerenderCollectionIcons() {
+      const Element = sap.ui.require("sap/ui/core/Element");
+      const registry = Element?.registry;
+      if (!registry?.forEach) return;
+      registry.forEach((element) => {
+        try {
+          const props = element.mProperties || {};
+          const named = Object.keys(props).some(
+            (key) =>
+              typeof props[key] === "string" && COLLECTION_ICON.test(props[key]),
+          );
+          if (named && !Util.isDestroyed(element)) element.invalidate();
+        } catch (e) {
+          Util.logError("Extension: could not re-render an icon", e);
+        }
+      });
+    }
+
     function install() {
       if (installed) return;
       installed = true;
@@ -135,6 +208,21 @@ sap.ui.define(
 
       ICON_FONTS.forEach(registerFont);
 
+      // the positional addIcon( name, collection, fontFamily, content ) is
+      // the form every UI5 release from 1.71 on takes (and the one a
+      // reuse library's library.js uses); an icon the IconPool already
+      // knows is kept
+      ICONS.forEach((set) =>
+        Object.entries(set.icons).forEach(([name, content]) => {
+          try {
+            if (IconPool.getIconInfo(`sap-icon://${set.collectionName}/${name}`)) return;
+            IconPool.addIcon(name, set.collectionName, set.fontFamily, content);
+          } catch (e) {
+            Util.logError(`Extension: could not add icon ${set.collectionName}/${name}`, e);
+          }
+        }),
+      );
+
       STYLESHEETS.forEach((href) =>
         Util.loadStyle(href).catch((e) =>
           Util.logError(`Extension: stylesheet ${href} not available`, e),
@@ -144,11 +232,14 @@ sap.ui.define(
       // Libraries load asynchronously and nothing here waits for them: a
       // library that only registers icons has no control the view could
       // reference, and one that does have controls is awaited by the XML
-      // template processor anyway when the view names its namespace.
+      // template processor anyway when the view names its namespace. The
+      // icons a library registers are drawn again once it is there.
       LIBRARIES.forEach((name) =>
-        loadLibrary(name).catch((e) =>
-          Util.logError(`Extension: library ${name} failed to load`, e),
-        ),
+        loadLibrary(name)
+          .then(rerenderCollectionIcons)
+          .catch((e) =>
+            Util.logError(`Extension: library ${name} failed to load`, e),
+          ),
       );
     }
 
