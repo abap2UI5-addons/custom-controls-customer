@@ -61,6 +61,7 @@ it anonymous - no customer name, namespace or system anywhere.
 ```sh
 npm ci
 npm run check   # abaplint (Standard and Cloud), the scripts parse, the BSP is up to date
+npm run check:702   # a scratch copy of src/ downported to 7.02 and linted
 npm run site    # the documentation site into build/site
 ```
 
@@ -74,7 +75,11 @@ pinned by commit in the `uses:` lines and moved by `bump-deps`):
   one job per check: `check / abaplint (./abaplint.jsonc)`,
   `check / abaplint (.github/abaplint/abap_cloud.jsonc)` (ABAP Cloud),
   `check / npm run check:js` and `check / npm run check:bsp` - these are the
-  required status checks of the branch protection. No abap2UI5-linter: its
+  required status checks of the branch protection - and
+  `check / npm run check:702` (`.github/scripts/check-702.sh`, the same file
+  as in admin-cockpit: a scratch copy of `src/` in `build/702` downported and
+  linted with `abap_702.jsonc`, `src/` is never rewritten - the 7.02 gate of a
+  pull request). No abap2UI5-linter: its
   render gate cannot know `z2ui5_ccc.cc.Example`, a control shipped from its
   own BSP, and there is no `abap2ui5lint.jsonc`. No unit tests. `check /
   rename` is the namespace rename check (below).

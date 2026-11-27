@@ -364,14 +364,17 @@ abap2UI5-addons) runs on every push to `main`, every pull request and weekly:
 abaplint against `abaplint.jsonc` (Standard ABAP) and
 `.github/abaplint/abap_cloud.jsonc` (ABAP Cloud), a check that the BSP under
 `src/01` matches `app/webapp` (`npm run check:bsp`: `npm run app2bsp` must
-leave no diff), and a syntax check of every JavaScript file under `app/webapp`
-(`npm run check:js`). `ci-702` writes the downported branch `702` on every
-push to `main` and lints it. Run the same before you push:
+leave no diff), a syntax check of every JavaScript file under `app/webapp`
+(`npm run check:js`) and the 7.02 downport of a scratch copy of `src/`
+(`npm run check:702`, under `build/702` - `src/` is not touched). `ci-702`
+writes the downported branch `702` on every push to `main` and lints it. Run
+the same before you push:
 
 ```bash
 npm ci
 npm run app2bsp
 npm run check
+npm run check:702
 ```
 
 ## Related
