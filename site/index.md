@@ -35,6 +35,7 @@ A template repository for a company's own frontend artefacts in abap2UI5: a UI5 
 
 - Standard ABAP 7.50 or higher
 - NetWeaver 7.02 - 7.40: the downported branch 702
+- Not the SAP BTP ABAP environment: the artefacts are served from a BSP, which it cannot import (the classes themselves are checked against ABAP Cloud)
 - abap2UI5 in a version that reserves the z2ui5_ccc resourceRoot
 
 ## Installation
