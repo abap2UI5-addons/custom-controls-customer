@@ -1,7 +1,7 @@
 # custom-controls-customer
 
 [![abap2UI5-addons](https://img.shields.io/badge/abap2UI5--addons-template-1873b4)](https://github.com/abap2UI5-addons)
-[![ABAP](https://img.shields.io/badge/ABAP-Standard%20%E2%89%A5%207.50-blue)](#installation)
+[![ABAP](https://img.shields.io/badge/ABAP-Standard%20%E2%89%A5%207.50%20%7C%207.02-blue)](#installation)
 [![abap2UI5](https://img.shields.io/badge/requires-abap2UI5-blue)](https://github.com/abap2UI5/abap2UI5)
 [![License](https://img.shields.io/github/license/abap2UI5-addons/custom-controls-customer)](LICENSE)
 <br>
@@ -110,6 +110,10 @@ never collide.
 - Standard ABAP 7.50 or higher
 - NetWeaver 7.02 - 7.40: the branch `702`, downported automatically from
   `main` on every push - pull abap2UI5 from its `702` branch as well
+- ABAP Cloud: CI checks the classes against ABAP Cloud as well
+  (`.github/abaplint/abap_cloud.jsonc`), but your artefacts are served from
+  the classic BSP application `Z2UI5_CCC`, which the SAP BTP ABAP environment
+  cannot import - the template needs a system with BSP (Standard ABAP)
 - [abap2UI5](https://github.com/abap2UI5/abap2UI5) - a version that reserves
   the `z2ui5_ccc` resourceRoot, installed in the backend. On an older
   framework the check app renders an empty page and the browser console shows
@@ -364,14 +368,17 @@ abap2UI5-addons) runs on every push to `main`, every pull request and weekly:
 abaplint against `abaplint.jsonc` (Standard ABAP) and
 `.github/abaplint/abap_cloud.jsonc` (ABAP Cloud), a check that the BSP under
 `src/01` matches `app/webapp` (`npm run check:bsp`: `npm run app2bsp` must
-leave no diff), and a syntax check of every JavaScript file under `app/webapp`
-(`npm run check:js`). `ci-702` writes the downported branch `702` on every
-push to `main` and lints it. Run the same before you push:
+leave no diff), a syntax check of every JavaScript file under `app/webapp`
+(`npm run check:js`) and the 7.02 downport of a scratch copy of `src/`
+(`npm run check:702`, under `build/702` - `src/` is not touched). `ci-702`
+writes the downported branch `702` on every push to `main` and lints it. Run
+the same before you push:
 
 ```bash
 npm ci
 npm run app2bsp
 npm run check
+npm run check:702
 ```
 
 ## Related
