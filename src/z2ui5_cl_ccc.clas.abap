@@ -69,7 +69,8 @@ CLASS z2ui5_cl_ccc DEFINITION
     "! ships. Replace it with builders for your own controls.
     "!
     "! @parameter view   | the builder positioned at the parent element
-    "! @parameter text   | text shown in the badge, bindable
+    "! @parameter text   | text shown in the badge, bindable - literal user
+    "!                      text escaped with escape_literal( ), see tag( )
     "! @parameter color  | CSS colour of the badge background
     "! @parameter press  | event fired on click
     "! @parameter result | the unchanged view builder, for chaining
@@ -92,6 +93,13 @@ CLASS z2ui5_cl_ccc DEFINITION
     "!
     "! Mirrors z2ui5_cl_ui5_view_builder=>tag: the element is added as a child
     "! and the cursor stays on the current node, so the caller can keep chaining.
+    "!
+    "! Every value is written as it is, like a( v = ) of the view builder: a
+    "! binding or an event stays one. A value that is LITERAL text from user
+    "! input or external data has to be escaped by the caller, or a `{` in it
+    "! is read as a binding:
+    "!
+    "!   text = z2ui5_cl_ui5_view_builder=&gt;escape_literal( lv_input )
     "!
     "! @parameter view   | the builder positioned at the parent element
     "! @parameter name   | element name, without the namespace prefix
