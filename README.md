@@ -27,7 +27,8 @@ edit a file and use abapGit, you can do it.
    copy it into your own git host. Your fork is yours: the files you add stay
    there and never have to go back here.
 2. **Put your files under `app/webapp/`** - your CSS into `css/style.css`,
-   an icon font into a new `css/icons.css`, a custom control into `cc/`.
+   an icon font into `css/icons.css`, a custom control into `cc/` - in
+   place of the customer example that ships there (see below).
 3. **Register them in `app/webapp/cc/Extension.js`.** At the top there are
    five short lists - resource roots, libraries, icon fonts, icons,
    stylesheets. Every list has a commented-out example; copy it and fill in
@@ -41,12 +42,15 @@ edit a file and use abapGit, you can do it.
    `z2ui5_cl_ccc=>render( page )` once per view (see [Use it from
    ABAP](#4-use-it-from-abap)).
 
-**Want to see a filled-in fork?** The branch
-[`example`](https://github.com/abap2UI5-addons/custom-controls-customer/tree/example)
-is a real customer example: an icon font with 30 icons, the customer's
-stylesheet and an app that uses both (`z2ui5_cl_ccc_sample_01`). Its files
-live in the folder [`example/`](example/) of `main`; the branch is built from
-them on every push to `main` and is always `main` plus one commit.
+**A filled-in example is already in the box.** `main` ships a real customer
+example (anonymous): an icon font with 30 icons in
+[`css/icons.css`](app/webapp/css/icons.css) and `ICONS` of
+[`cc/Extension.js`](app/webapp/cc/Extension.js), the customer's stylesheet in
+[`css/style.css`](app/webapp/css/style.css), and the app
+[`z2ui5_cl_ccc_sample_01`](src/00/z2ui5_cl_ccc_sample_01.clas.abap)
+(`?app_start=z2ui5_cl_ccc_sample_01`) that uses all of it - icons, row
+colours, a column-sort header. Look at it after installing, then replace
+those files with your own (or delete them) in your fork.
 
 That's it. When this template gets an update, pull it into your fork
 ("Sync fork" on GitHub) - your own files are not touched by it, as long as
@@ -120,7 +124,8 @@ never collide.
 3. your fork (branch `main`) - it brings the ABAP classes, the BSP
    application `Z2UI5_CCC` and the two ICF nodes it is served from
 
-**Start** - **`?app_start=z2ui5_cl_ccc_sample_00`** — the check app. If the badge
+**Start** - **`?app_start=z2ui5_cl_ccc_sample_00`** — the check app, and
+**`?app_start=z2ui5_cl_ccc_sample_01`** — the customer example. If the badge
 renders, is styled and reacts to a click, the BSP is deployed and the
 frontend resolves `z2ui5_ccc`.
 
@@ -334,6 +339,8 @@ system demands it, but keep the resourceRoot.
 | `app/webapp/Util.js` | `url`, `loadStyle`, `loadScript`, `logError`, `isDestroyed` |
 | `src/z2ui5_cl_ccc.clas.abap` | ABAP side — `xmlns( )`, `render( )`, `example( )`, `tag( )` |
 | `src/00/z2ui5_cl_ccc_sample_00.clas.abap` | installation check app |
+| `src/00/z2ui5_cl_ccc_sample_01.clas.abap` | the customer example: icons, row colours, column-sort header |
+| `app/webapp/css/icons.css` | the customer example's icon font (base64 data URI) |
 | `tools/app2bsp.mjs` | `app/webapp` → the abapGit BSP artefacts under `src/01` |
 
 ## Development

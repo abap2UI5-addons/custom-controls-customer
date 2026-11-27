@@ -1,20 +1,17 @@
-/* Stylesheet of this extension BSP, loaded by cc/Extension.js.
+/* Stylesheet of this extension BSP, loaded once per page by cc/Extension.js.
  *
- * Put your own classes, corporate colours and @font-face rules here.
+ * Everything below the template's example control is a REAL CUSTOMER EXAMPLE
+ * (anonymous), shown by z2ui5_cl_ccc_sample_01 - replace it with your own.
+ * The customer's apps declare the extension in every page they build (one
+ * central page method) and give the view the class customerApp - rules that
+ * would hit other apps on the page are scoped to it.
+ * This file stays on the page once loaded, also while an app of another
+ * package is shown: scope every rule that is not unique to these apps.
  *
- * A note on fonts: BSP pages are TEXT, so a .woff2 cannot be committed under
- * app/webapp. A base64 data: URI can - it is text - which makes this file the
- * simplest place to ship an icon font that abapGit can carry:
- *
- *   @font-face {
- *     font-family: "MyCustomFontFamily";
- *     src: url("data:font/woff2;base64,d09GMgABAAAAA...") format("woff2");
- *   }
- *
- * See the README section "Binary artefacts" for the alternative (MIME
- * objects), which is the better choice for anything large.
+ * Every line stays below 255 characters (see AGENTS.md).
  */
 
+/* Example control of the template (z2ui5_cl_ccc_sample_00) */
 .z2ui5_cccExample {
   display: inline-block;
   padding: 0.25rem 0.75rem;
@@ -23,4 +20,135 @@
   font-size: 0.875rem;
   line-height: 1.25rem;
   cursor: pointer;
+}
+
+/* Row colours of the tables. The table of layout-management writes the
+ * colour key of a colour column of the row structure to the row
+ * (CustomData key "color", writeToDom) - data-color="<key>" on the tr.
+ * The keys are the SAP colour palette names. */
+tr[data-color="grey_1"] > td { background-color: #F5F6F7; }
+tr[data-color="grey_2"] > td { background-color: #EAECEE; }
+tr[data-color="grey_3"] > td { background-color: #D5DADD; }
+tr[data-color="grey_4"] > td { background-color: #A9B4BE; }
+tr[data-color="grey_5"] > td { background-color: #8396A8; }
+tr[data-color="grey_6"] > td { background-color: #5B738B; }
+tr[data-color="grey_7"] > td { background-color: #475E75; }
+tr[data-color="grey_8"] > td { background-color: #354A5F; }
+tr[data-color="grey_9"] > td { background-color: #223548; }
+tr[data-color="grey_10"] > td { background-color: #1A2733; }
+tr[data-color="grey_11"] > td { background-color: #12171C; }
+tr[data-color="red_1"] > td { background-color: #FFEAF4; }
+tr[data-color="red_2"] > td { background-color: #FFD5EA; }
+tr[data-color="red_3"] > td { background-color: #FFB2D2; }
+tr[data-color="red_4"] > td { background-color: #FF8CB2; }
+tr[data-color="red_5"] > td { background-color: #FF5C77; }
+tr[data-color="red_6"] > td { background-color: #EE3939; }
+tr[data-color="red_7"] > td { background-color: #D20A0A; }
+tr[data-color="red_8"] > td { background-color: #AA0808; }
+tr[data-color="red_9"] > td { background-color: #840606; }
+tr[data-color="red_10"] > td { background-color: #5A0404; }
+tr[data-color="red_11"] > td { background-color: #350000; }
+tr[data-color="mango_1"] > td { background-color: #FFF8D6; }
+tr[data-color="mango_2"] > td { background-color: #FFF3B8; }
+tr[data-color="mango_3"] > td { background-color: #FFDF72; }
+tr[data-color="mango_4"] > td { background-color: #FFC933; }
+tr[data-color="mango_5"] > td { background-color: #FFB300; }
+tr[data-color="mango_6"] > td { background-color: #E76500; }
+tr[data-color="mango_7"] > td { background-color: #C35500; }
+tr[data-color="mango_8"] > td { background-color: #A93E00; }
+tr[data-color="mango_9"] > td { background-color: #8D2A00; }
+tr[data-color="mango_10"] > td { background-color: #6D1900; }
+tr[data-color="mango_11"] > td { background-color: #450B00; }
+tr[data-color="green_1"] > td { background-color: #F5FAE5; }
+tr[data-color="green_2"] > td { background-color: #EBF5CB; }
+tr[data-color="green_3"] > td { background-color: #BDE986; }
+tr[data-color="green_4"] > td { background-color: #97DD40; }
+tr[data-color="green_5"] > td { background-color: #5DC122; }
+tr[data-color="green_6"] > td { background-color: #36A41D; }
+tr[data-color="green_7"] > td { background-color: #188918; }
+tr[data-color="green_8"] > td { background-color: #256F3A; }
+tr[data-color="green_9"] > td { background-color: #1E592F; }
+tr[data-color="green_10"] > td { background-color: #164323; }
+tr[data-color="green_11"] > td { background-color: #0E2B16; }
+tr[data-color="teal_1"] > td { background-color: #DAFDF5; }
+tr[data-color="teal_2"] > td { background-color: #C2FCEE; }
+tr[data-color="teal_3"] > td { background-color: #64EDD2; }
+tr[data-color="teal_4"] > td { background-color: #2CE0BF; }
+tr[data-color="teal_5"] > td { background-color: #00CEAC; }
+tr[data-color="teal_6"] > td { background-color: #049F9A; }
+tr[data-color="teal_7"] > td { background-color: #07838F; }
+tr[data-color="teal_8"] > td { background-color: #046C7A; }
+tr[data-color="teal_9"] > td { background-color: #035663; }
+tr[data-color="teal_10"] > td { background-color: #02414C; }
+tr[data-color="teal_11"] > td { background-color: #012931; }
+tr[data-color="blue_1"] > td { background-color: #EBF8FF; }
+tr[data-color="blue_2"] > td { background-color: #D1EFFF; }
+tr[data-color="blue_3"] > td { background-color: #A6E0FF; }
+tr[data-color="blue_4"] > td { background-color: #89D1FF; }
+tr[data-color="blue_5"] > td { background-color: #4DB1FF; }
+tr[data-color="blue_6"] > td { background-color: #1B90FF; }
+tr[data-color="blue_7"] > td { background-color: #0070F2; }
+tr[data-color="blue_8"] > td { background-color: #0057D2; }
+tr[data-color="blue_9"] > td { background-color: #0040B0; }
+tr[data-color="blue_10"] > td { background-color: #002A86; }
+tr[data-color="blue_11"] > td { background-color: #00144A; }
+tr[data-color="indigo_1"] > td { background-color: #F1ECFF; }
+tr[data-color="indigo_2"] > td { background-color: #E2D8FF; }
+tr[data-color="indigo_3"] > td { background-color: #D3B6FF; }
+tr[data-color="indigo_4"] > td { background-color: #B894FF; }
+tr[data-color="indigo_5"] > td { background-color: #9B76FF; }
+tr[data-color="indigo_6"] > td { background-color: #7858FF; }
+tr[data-color="indigo_7"] > td { background-color: #5D36FF; }
+tr[data-color="indigo_8"] > td { background-color: #470CED; }
+tr[data-color="indigo_9"] > td { background-color: #2C13AD; }
+tr[data-color="indigo_10"] > td { background-color: #1C0C6E; }
+tr[data-color="indigo_11"] > td { background-color: #0E0637; }
+tr[data-color="pink_1"] > td { background-color: #FFF0FA; }
+tr[data-color="pink_2"] > td { background-color: #FFDCF3; }
+tr[data-color="pink_3"] > td { background-color: #FFAFED; }
+tr[data-color="pink_4"] > td { background-color: #FF8AF0; }
+tr[data-color="pink_5"] > td { background-color: #F65AF2; }
+tr[data-color="pink_6"] > td { background-color: #F31DED; }
+tr[data-color="pink_7"] > td { background-color: #CC00DC; }
+tr[data-color="pink_8"] > td { background-color: #A100C2; }
+tr[data-color="pink_9"] > td { background-color: #7800A4; }
+tr[data-color="pink_10"] > td { background-color: #510080; }
+tr[data-color="pink_11"] > td { background-color: #28004A; }
+tr[data-color="raspberry_1"] > td { background-color: #FFF0F5; }
+tr[data-color="raspberry_2"] > td { background-color: #FFDCE8; }
+tr[data-color="raspberry_3"] > td { background-color: #FECBDA; }
+tr[data-color="raspberry_4"] > td { background-color: #FEADC8; }
+tr[data-color="raspberry_5"] > td { background-color: #FE83AE; }
+tr[data-color="raspberry_6"] > td { background-color: #FA4F96; }
+tr[data-color="raspberry_7"] > td { background-color: #DF1278; }
+tr[data-color="raspberry_8"] > td { background-color: #BA066C; }
+tr[data-color="raspberry_9"] > td { background-color: #9B015D; }
+tr[data-color="raspberry_10"] > td { background-color: #71014B; }
+tr[data-color="raspberry_11"] > td { background-color: #510136; }
+tr[data-color="white"] > td { background-color: #FFFFFF; }
+tr[data-color="black"] > td { background-color: #000000; }
+
+/* Column header links of tables with column sorting (class customerColSort) */
+.customerColSort.sapMLnk, .customerColSort.sapMLnk:hover, .customerColSort.sapMLnk:active,
+.customerColSort.sapMLnk:visited, .customerColSort.sapMLnk:focus, .customerColSort .sapMLnkText {
+  color: var(--sapList_HeaderTextColor) !important;
+  text-decoration: none !important;
+  text-shadow: none !important;
+}
+
+/* Phone: no padding around the dynamic page content */
+.customerApp .sapFDynamicPage-Std-Phone .sapFDynamicPageContent,
+.customerApp .sapFDynamicPage-Std-Phone .sapFDynamicPageContentFitContainer {
+  padding: 0rem 0rem 0rem;
+}
+.customerApp .sapFDynamicPage-Std-Phone .sapUiResponsiveContentPadding .sapMITBContent {
+  padding: 0 0 0rem !important;
+}
+
+/* Popovers 800 x 400 while one of these views is on the page. A popover renders in the static area, outside
+ * the view, so the scope is the page holding a customerApp view; a browser
+ * without :has( ) drops the rule and keeps the popover size of UI5. */
+body:has(.customerApp) .sapMPopoverCont {
+  width: 800px !important;
+  height: 400px !important;
 }

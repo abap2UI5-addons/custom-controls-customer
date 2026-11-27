@@ -1,4 +1,7 @@
-/* The icon font "my-icons" of the customer's apps (MyCustomFontFamily, WOFF),
+/* A REAL CUSTOMER EXAMPLE (anonymous) - replace it with your own font, or
+ * delete this file and its entries in cc/Extension.js (ICONS, STYLESHEETS).
+ *
+ * The icon font "my-icons" of the customer's apps (MyCustomFontFamily, WOFF),
  * taken over from their former reuse-library BSP. A BSP page is text, so the
  * font travels as a base64 data URI; the backslash at the end of each line
  * continues the CSS string (lines stay below 255 characters, see AGENTS.md).
