@@ -144,9 +144,16 @@ app/webapp/
     └── style.css       your CSS
 ```
 
-Two limits come from the BSP page format and are checked by `app2bsp`, which
-fails loudly rather than letting SAP reject the import:
+The BSP page format sets the limits below, and `app2bsp` checks them, failing
+loudly rather than letting SAP reject the import or serve a mangled file:
 
+* **lines of at most 255 characters** — a BSP page is stored as 255-character
+  lines, so a longer line would be cut wherever character 256 falls, in the
+  middle of a token of a minified library or a base64 string. `app2bsp` refuses
+  it and names the line; break it where the syntax allows (a base64 string in
+  CSS continues after a `\` at the end of the line)
+* **text only** — a file that is not UTF-8 text is refused, see
+  [Binary artefacts](#binary-artefacts)
 * **at most one directory level** — `cc/Example.js` is fine, `cc/lib/x.js` is not
 * **names from letters, digits, `_` and `.` only** — no hyphens
 
@@ -328,7 +335,7 @@ control does not render, check that letter first.
 ## Renaming
 
 `Z2UI5_CCC` and the `Z2UI5_CL_CCC*` classes are the defaults. To use your own
-namespace, change `BSP` and `PREFIX` in `tools/app2bsp.mjs`, the
+namespace, change `config.bsp` (`name`, `text`) in `package.json`, the
 `resourceRoots` key the frontend registers, the class names, and the
 `object_naming` patterns in `abaplint.jsonc` — all together.
 
@@ -343,12 +350,12 @@ system demands it, but keep the resourceRoot.
 |---|---|
 | `app/webapp/cc/Extension.js` | the bootstrap element — resource roots, libraries, icon fonts, stylesheets |
 | `app/webapp/cc/Example.js` | a template custom control (property, event, renderer) |
-| `app/webapp/Util.js` | `url`, `loadStyle`, `loadScript`, `logError`, `isDestroyed` |
+| `app/webapp/Util.js` | `url`, `loadStyle`, `loadScript` (both take an optional Subresource Integrity hash for a CDN file), `logError`, `isDestroyed` |
 | `src/z2ui5_cl_ccc.clas.abap` | ABAP side — `xmlns( )`, `render( )`, `example( )`, `tag( )` |
 | `src/00/z2ui5_cl_ccc_sample_00.clas.abap` | installation check app |
 | `src/00/z2ui5_cl_ccc_sample_01.clas.abap` | the customer example: icons, row colours, column-sort header |
 | `app/webapp/css/icons.css` | the customer example's icon font (base64 data URI) |
-| `tools/app2bsp.mjs` | `app/webapp` → the abapGit BSP artefacts under `src/01` |
+| `tools/app2bsp.mjs` | `app/webapp` → the abapGit BSP artefacts under `src/01`; the same file as in abap2UI5-addons/custom-controls, the BSP name, text and ICF parent nodes come from `config.bsp` in `package.json` |
 
 ## Development
 

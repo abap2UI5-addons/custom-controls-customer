@@ -11,7 +11,7 @@ README.md is the user documentation; keep it and this file in step.
 | Path | Purpose |
 | --- | --- |
 | `app/webapp/` | The source of the BSP: `cc/Extension.js` (loaded by abap2UI5 from the reserved resourceRoot `z2ui5_ccc`), `cc/Example.js`, `css/style.css`, `Util.js`, `index.html` |
-| `tools/app2bsp.mjs` | Generates `src/01/` from `app/webapp/`: a BSP page per file, the UI5 repository path mapping, the page directory and the two ICF nodes |
+| `tools/app2bsp.mjs` | Generates `src/01/` from `app/webapp/`: a BSP page per file, the UI5 repository path mapping, the page directory and the two ICF nodes. The same file, byte for byte, as in abap2UI5-addons/custom-controls - the BSP name, text and ICF parent GUIDs are `config.bsp` in `package.json` |
 | `src/01/` | The BSP `Z2UI5_CCC` and its ICF nodes - **generated**, never edited |
 | `src/z2ui5_cl_ccc.clas.abap` | The ABAP helper the apps call |
 | `src/00/` | The sample app `z2ui5_cl_ccc_sample_00` |
@@ -44,9 +44,15 @@ it anonymous - no customer name, namespace or system anywhere.
   repository; `z2ui5_cci` belongs to abap2UI5-addons/custom-controls. Do not
   move either - the framework's frontend loads them by name.
 - **A BSP page is stored as 255-character lines** (`tools/app2bsp.mjs`,
-  `LINE_WIDTH`): a longer line is cut into 255-character chunks, a line break
-  in the middle of whatever stands there. Keep every line of `app/webapp/`
-  shorter.
+  `LINE_WIDTH`): a longer line would be cut in the middle of whatever stands
+  there, so `app2bsp` refuses it with the file and line, as it refuses a file
+  that is not UTF-8 text. Keep every line of `app/webapp/` at most 255
+  characters long.
+- **`tools/app2bsp.mjs` is shared with custom-controls**: change it there and
+  here together, and keep it identical; per-repository values belong in
+  `config.bsp`. `app/webapp/Util.js` mirrors the helpers of custom-controls'
+  `cc/Util.js` of the same name (loadScript/loadStyle with an optional
+  integrity hash, isDestroyed with the pre-1.93 fallback).
 - **UI5 1.71 is the floor**, as everywhere in abap2UI5: no module or API newer
   than that in `app/webapp/`.
 
