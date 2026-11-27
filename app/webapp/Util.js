@@ -4,6 +4,11 @@
 // frontend-internal and not part of abap2UI5's public contract, so artefacts
 // shipped from their own BSP must not reach into it - a refactor there would
 // break this extension silently.
+//
+// loadStyle, loadScript, logError and isDestroyed behave as their namesakes in
+// abap2UI5-addons/custom-controls (app/webapp/cc/Util.js) - keep the two in
+// step. That module looks the integrity hash up in its generated LibUrls.js;
+// here there is no such list, so the caller passes it.
 sap.ui.define([], () => {
   "use strict";
 
@@ -16,7 +21,24 @@ sap.ui.define([], () => {
     console.error(error === undefined ? message : `${message}:`, error ?? "");
 
   // Guards async continuations against a control torn down in the meantime.
-  const isDestroyed = (obj) => Boolean(obj?.isDestroyed && obj.isDestroyed());
+  // ManagedObject.isDestroyed( ) arrived in UI5 1.93; before it the flag is
+  // the only way to ask.
+  const isDestroyed = (obj) =>
+    Boolean(
+      obj &&
+        (typeof obj.isDestroyed === "function" ? obj.isDestroyed() : obj.bIsDestroyed),
+    );
+
+  // An optional Subresource Integrity hash ("sha384-..."), for a file from a
+  // CDN: the browser refuses it when its bytes differ from the ones you
+  // tested. A cross-origin file is only checked when fetched in CORS mode,
+  // hence crossorigin="anonymous" - the CDN has to answer with
+  // Access-Control-Allow-Origin. A file from this BSP needs none.
+  function applyIntegrity(tag, integrity) {
+    if (!integrity) return;
+    tag.setAttribute("integrity", integrity);
+    tag.setAttribute("crossorigin", "anonymous");
+  }
 
   // Absolute URL of a file inside THIS BSP. Never hardcode
   // "/sap/bc/ui5_ui5/sap/z2ui5_ccc/..." - the abap2UI5 frontend registers the
@@ -25,13 +47,15 @@ sap.ui.define([], () => {
   const url = (path) => sap.ui.require.toUrl(`z2ui5_ccc/${path}`);
 
   // Adds a <link rel="stylesheet"> once and resolves when it is applied.
-  function loadStyle(href) {
+  // `integrity`: see applyIntegrity.
+  function loadStyle(href, integrity) {
     if (!href) return Promise.reject(new Error("no stylesheet URL"));
     if (styles.has(href)) return styles.get(href);
 
     const pending = new Promise((resolve, reject) => {
       const tag = document.createElement("link");
       tag.rel = "stylesheet";
+      applyIntegrity(tag, integrity);
       tag.href = href;
       tag.addEventListener("load", () => resolve());
       tag.addEventListener("error", () =>
@@ -48,14 +72,16 @@ sap.ui.define([], () => {
   }
 
   // Adds a <script> once and resolves when it is ready. `isReady` lets a
-  // caller skip the whole thing when the library is already on the page.
-  function loadScript(src, isReady) {
+  // caller skip the whole thing when the library is already on the page;
+  // `integrity`: see applyIntegrity.
+  function loadScript(src, isReady, integrity) {
     if (typeof isReady === "function" && isReady()) return Promise.resolve();
     if (!src) return Promise.reject(new Error("no script URL"));
     if (scripts.has(src)) return scripts.get(src);
 
     const pending = new Promise((resolve, reject) => {
       const tag = document.createElement("script");
+      applyIntegrity(tag, integrity);
       tag.src = src;
       tag.async = true;
       tag.addEventListener("load", () => resolve());

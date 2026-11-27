@@ -1,47 +1,67 @@
-// Generates the abapGit BSP artefacts for the Z2UI5_CCC extension BSP from
-// app/webapp/.
+// Generates the abapGit BSP artefacts of a BSP from app/webapp/.
 //
-// Same approach as abap2UI5-addons/custom-controls (tools/app2bsp.mjs) and the
-// abap2UI5-frontend repo's .github/app2bsp/run.js: every file under app/webapp
-// becomes a BSP page, plus the UI5 repository path mapping and the page
-// directory (z2ui5_ccc.wapa.xml) the abapGit WAPA deserializer reads.
+// Same approach as the abap2UI5-frontend repo's .github/app2bsp/run.js, cut
+// down to what a control container needs: every file under app/webapp becomes
+// a BSP page, plus the UI5 repository path mapping and the page directory
+// (<bsp>.wapa.xml) the abapGit WAPA deserializer reads.
+//
+// This file is the same, byte for byte, in abap2UI5-addons/custom-controls
+// (the BSP Z2UI5_CCI) and abap2UI5-addons/custom-controls-customer (Z2UI5_CCC
+// and every customer fork of it): what differs between the two - the BSP name,
+// its description and the GUIDs of its ICF parent nodes - is read from
+// package.json, `config.bsp`. Change it in one repository, copy it to the
+// other.
 //
 // Run: npm run app2bsp - and commit what it writes. CI regenerates and fails
 // on a diff, so a stale page can never ship old JavaScript unnoticed.
 import { readdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { join, relative, sep, dirname } from "node:path";
 
+// package.json config.bsp:
+//
+//   name        the BSP (WAPA) name, e.g. "Z2UI5_CCI" - also the ICF node
+//   text        its description, shown in SE80 and on the ICF node
+//   icfParents  [{ guid, url }] - the ICF nodes the BSP is served from, see
+//               below
+const { name: BSP, text: BSP_TEXT, icfParents: ICF_PARENTS } =
+  JSON.parse(readFileSync("package.json", "utf8")).config.bsp;
+
 const SOURCE_DIR = "app/webapp";
-// the BSP artefacts live in their own subpackage - src/ root carries the
-// ABAP helper class, src/00 the sample app
+// the BSP artefacts live in their own subpackage - src/ and src/00 carry the
+// ABAP classes and the samples
 const TARGET_DIR = "src/01";
-const BSP = "Z2UI5_CCC";
-const PREFIX = "z2ui5_ccc.wapa.";
+const PREFIX = `${BSP.toLowerCase()}.wapa.`;
 const MAPPING_PAGE = "UI5RepositoryPathMapping.xml";
 const START_PAGE = "index.html";
-const BSP_TEXT = "abap2UI5 customer frontend extension";
 
-// ICF nodes the BSP is served from. Without them abapGit creates the BSP
-// application but no URL resolves to it and the browser gets
-// "ICF Node NOT found!". The parent GUIDs are the SAP standard nodes
-// /sap/bc/ui5_ui5/sap/ and /sap/bc/bsp/sap/ and are system-independent.
-// abapGit names an SICF file <icf_name padded to 15><25-char parent guid>.
+// ICF nodes the BSP is served from (config.bsp.icfParents). Without them
+// abapGit creates the BSP application but no URL resolves to it and the
+// browser gets "ICF Node NOT found!". The parents are the SAP standard nodes
+// /sap/bc/ui5_ui5/sap/ and /sap/bc/bsp/sap/; abapGit names an SICF file
+// <icf_name padded to 15><25-char parent guid>.
 //
-// They are the same two GUIDs the custom-controls repository ships, which a
-// real system serialized back - do not "correct" them by hand. Keep them in
-// sync with the file names under src/01: the app2bsp CI job compares the
-// generated tree against what is committed and a renamed SICF file fails it.
-const ICF_PARENTS = [
-  { guid: "4e1b211b6bfb61040291eeb86", url: "/sap/bc/ui5_ui5/sap/" },
-  { guid: "8d302f135405e74f3ccd28274", url: "/sap/bc/bsp/sap/" },
-];
+// The GUIDs are the ones a real system serialized back - do not "correct"
+// them by hand; in custom-controls two earlier sets were wrong and abapGit did
+// not match them against the standard nodes. Keep them in sync with the file
+// names under src/01: the CI job compares the generated tree against what is
+// committed, so a SICF file renamed by hand without changing the list fails
+// the build.
 const ICF_NAME_WIDTH = 15;
 
 // BSP pages are stored on the SAP system as fixed-width 255-character lines.
 // abapGit serializes them back exactly like that: every line space-padded to
-// 255 characters, longer lines wrapped into 255-character chunks, LF endings
-// and no newline after the last line. Emitting the same format means pulling
-// into SAP and re-serializing produces no diff.
+// 255 characters, LF endings and no newline after the last line. Emitting the
+// same format means pulling into SAP and re-serializing produces no diff.
+//
+// A source line longer than 255 characters has no faithful representation in
+// that format - it has to be chopped at character 256, wherever in the syntax
+// that lands, and the file the system serves back is then not the file that
+// went in - a minified library or a base64 string is broken in the middle of a
+// token. So it is refused here rather than discovered as a broken control on a
+// customer's system. Break such a line where the syntax allows it: a long
+// base64 string in CSS may continue on the next line after a `\`, and in
+// custom-controls tools/wrap-lines.mjs breaks the vendored libraries at points
+// the JavaScript and CSS grammars treat as whitespace.
 const LINE_WIDTH = 255;
 
 // SAP validates a BSP page name on import, and a rejected one fails the whole
@@ -55,10 +75,6 @@ const LINE_WIDTH = 255;
 // built from letters, digits, underscore and dot only. A two-level path with a
 // hyphen in it (`lib/imagemap-editor/bridge.js`) was rejected by a real system;
 // which of the two SAP objected to was never established, so neither is used.
-//
-// This is also why a binary asset (a .woff2 icon font, a .png) cannot simply be
-// dropped into app/webapp: BSP pages are text. See the README section
-// "Binary artefacts" for the two ways that do work.
 const PAGE_SEGMENT = /^[A-Za-z0-9_.]+$/;
 const MAX_DEPTH = 1;
 
@@ -88,20 +104,22 @@ function collect(dir, base = dir) {
   return files;
 }
 
-function toBspPageFormat(content) {
+function toBspPageFormat(content, rel) {
   const lines = content.split(/\r\n|\r|\n/);
   if (lines.length > 1 && lines[lines.length - 1] === "") lines.pop();
-  const padded = [];
-  for (const line of lines) {
-    if (line.length <= LINE_WIDTH) {
-      padded.push(line.padEnd(LINE_WIDTH));
-    } else {
-      for (let o = 0; o < line.length; o += LINE_WIDTH) {
-        padded.push(line.slice(o, o + LINE_WIDTH).padEnd(LINE_WIDTH));
-      }
-    }
+
+  const over = lines
+    .map((line, index) => (line.length > LINE_WIDTH ? `${index + 1}:${line.length}` : null))
+    .filter(Boolean);
+  if (over.length) {
+    throw new Error(
+      `${rel}: ${over.length} line(s) longer than ${LINE_WIDTH} characters ` +
+        `(line:length ${over.slice(0, 5).join(", ")}${over.length > 5 ? ", ..." : ""}) - ` +
+        `a BSP page cannot carry them; break the line where the syntax allows it`,
+    );
   }
-  return padded.join("\n");
+
+  return lines.map((line) => line.padEnd(LINE_WIDTH)).join("\n");
 }
 
 const escapeXml = (v) =>
@@ -156,10 +174,7 @@ function buildPageItem(page) {
   // matching the abapGit WAPA serializer output
   const typeLines =
     page === START_PAGE
-      ? [
-          "      <MIMETYPE>text/html</MIMETYPE>",
-          "      <IS_START_PAGE>X</IS_START_PAGE>",
-        ]
+      ? ["      <MIMETYPE>text/html</MIMETYPE>", "      <IS_START_PAGE>X</IS_START_PAGE>"]
       : ["      <PAGETYPE>X</PAGETYPE>"];
   return [
     "    <item>",
@@ -178,11 +193,7 @@ function buildPageItem(page) {
 
 function buildWapaXml(pages) {
   const sorted = [...pages].sort((a, b) =>
-    a.toUpperCase() < b.toUpperCase()
-      ? -1
-      : a.toUpperCase() > b.toUpperCase()
-        ? 1
-        : 0,
+    a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0,
   );
   // abapGit writes its XML with a UTF-8 BOM; emit one so a pull/push cycle
   // produces no diff
@@ -242,13 +253,6 @@ function buildSicfXml(url) {
 const sicfFileName = (guid) =>
   `${BSP.toLowerCase().padEnd(ICF_NAME_WIDTH)}${guid}.sicf.xml`;
 
-// only the generated artefacts are cleared - src/01 also holds its
-// package.devc.xml, which must survive
-for (const f of readdirSync(TARGET_DIR)) {
-  if (f.startsWith(PREFIX) || f.endsWith(".sicf.xml"))
-    rmSync(join(TARGET_DIR, f));
-}
-
 const files = collect(SOURCE_DIR);
 if (files.length === 0) {
   console.error(`no files found under ${SOURCE_DIR}/`);
@@ -265,50 +269,50 @@ try {
 
 // A binary file passes the name check (`font.woff2` is a valid page name), and
 // reading it as UTF-8 would replace every invalid byte sequence with U+FFFD -
-// the page would import, and serve a corrupted font. So anything that is not
-// valid UTF-8 text is refused, as the README section "Binary artefacts" says.
+// the page would import, and serve a corrupted file. So anything that is not
+// valid UTF-8 text is refused: BSP pages are text, a binary has to travel as
+// base64 inside one (a data URI in CSS, a script carrying it).
 const utf8 = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
 
-const contents = new Map();
-for (const rel of files) {
-  try {
-    contents.set(rel, utf8.decode(readFileSync(join(SOURCE_DIR, rel))));
-  } catch {
-    console.error(
-      `${rel}: not UTF-8 text - BSP pages are text, so a binary file ` +
-        `cannot be one (see the README section "Binary artefacts")`,
-    );
-    process.exit(1);
+// every file is read and checked before anything under src/01 is touched, so
+// a refused file leaves the generated BSP as it was
+const pages = new Map();
+try {
+  for (const rel of files) {
+    let content;
+    try {
+      content = utf8.decode(readFileSync(join(SOURCE_DIR, rel)));
+    } catch {
+      throw new Error(`${rel}: not UTF-8 text - BSP pages are text, so a binary file cannot be one`);
+    }
+    pages.set(rel, toBspPageFormat(content, rel));
   }
+  pages.set(MAPPING_PAGE, toBspPageFormat(buildMapping(files), MAPPING_PAGE));
+} catch (e) {
+  console.error(e.message);
+  process.exit(1);
+}
+
+// only the generated artefacts are cleared - src/01 also holds its
+// package.devc.xml, which must survive
+for (const f of readdirSync(TARGET_DIR)) {
+  if (f.startsWith(PREFIX) || f.endsWith(".sicf.xml")) rmSync(join(TARGET_DIR, f));
 }
 
 for (const rel of files) {
-  const content = contents.get(rel);
-  writeFileSync(
-    join(TARGET_DIR, targetFileName(rel)),
-    toBspPageFormat(content),
-    "utf8",
-  );
+  writeFileSync(join(TARGET_DIR, targetFileName(rel)), pages.get(rel), "utf8");
   console.log(`${rel} -> ${TARGET_DIR}/${targetFileName(rel)}`);
 }
 
-writeFileSync(
-  join(TARGET_DIR, targetFileName(MAPPING_PAGE)),
-  toBspPageFormat(buildMapping(files)),
-  "utf8",
-);
+writeFileSync(join(TARGET_DIR, targetFileName(MAPPING_PAGE)), pages.get(MAPPING_PAGE), "utf8");
 console.log(`generated ${targetFileName(MAPPING_PAGE)}`);
 
-const pages = [...files, MAPPING_PAGE];
-writeFileSync(join(TARGET_DIR, `${PREFIX}xml`), buildWapaXml(pages), "utf8");
-console.log(`generated ${PREFIX}xml with ${pages.length} pages`);
+const pageNames = [...files, MAPPING_PAGE];
+writeFileSync(join(TARGET_DIR, `${PREFIX}xml`), buildWapaXml(pageNames), "utf8");
+console.log(`generated ${PREFIX}xml with ${pageNames.length} pages`);
 
 for (const parent of ICF_PARENTS) {
   const name = sicfFileName(parent.guid);
-  writeFileSync(
-    join(TARGET_DIR, name),
-    buildSicfXml(`${parent.url}${BSP.toLowerCase()}/`),
-    "utf8",
-  );
+  writeFileSync(join(TARGET_DIR, name), buildSicfXml(`${parent.url}${BSP.toLowerCase()}/`), "utf8");
   console.log(`generated ${name} -> ${parent.url}${BSP.toLowerCase()}/`);
 }

@@ -37,6 +37,14 @@
     "node": ">=22"
   },
   "config": {
+    "bsp": {
+      "name": "Z2UI5_CCC",
+      "text": "abap2UI5 customer frontend extension",
+      "icfParents": [
+        { "guid": "4e1b211b6bfb61040291eeb86", "url": "/sap/bc/ui5_ui5/sap/" },
+        { "guid": "8d302f135405e74f3ccd28274", "url": "/sap/bc/bsp/sap/" }
+      ]
+    },
     "renameSkip": {
       "src/01/": "the BSP Z2UI5_CCC (WAPA) and its two ICF nodes - abaplint 2.120.120 has no WAPA renamer (abap2UI5 backlog item abaplint-rename-wapa, abaplint PR #4721), and the abap2UI5 frontend reserves the resource root z2ui5_ccc; install the BSP unrenamed"
     },
