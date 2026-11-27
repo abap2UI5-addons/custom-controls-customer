@@ -330,7 +330,7 @@ Renaming it means registering the new one yourself, which puts you back in the
 business of patching framework files — so rename the ABAP objects if your
 system demands it, but keep the resourceRoot.
 
-## What is in the box
+## Features
 
 | Artefact | Purpose |
 |---|---|
