@@ -214,6 +214,13 @@ view that relies on an icon font, a stylesheet or a registered library —
 before the controls that use them. Calling it twice is harmless; the
 installation runs once per page.
 
+A builder of your own control hands its parameters to `z2ui5_cl_ccc=>tag( )`
+as `key=value` strings, as `example( )` does; empty ones are dropped. The
+values are written as they are, so a binding stays a binding - literal text
+from user input is escaped by the app with
+`z2ui5_cl_ui5_view_builder=>escape_literal( )`, or a `{` in it is read as a
+binding.
+
 ## How it works
 
 abap2UI5 reserves the resourceRoot **`z2ui5_ccc`** in its `manifest.json`:
