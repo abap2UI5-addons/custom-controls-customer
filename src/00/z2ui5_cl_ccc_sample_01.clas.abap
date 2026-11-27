@@ -29,7 +29,7 @@ CLASS z2ui5_cl_ccc_sample_01 DEFINITION
         quantity TYPE i,
         color    TYPE string,
       END OF ty_s_row.
-    TYPES ty_t_row TYPE STANDARD TABLE OF ty_s_row WITH EMPTY KEY.
+    TYPES ty_t_row TYPE STANDARD TABLE OF ty_s_row WITH DEFAULT KEY.
 
     " ONLY bound data here - PUBLIC attributes are serialized every roundtrip
     DATA t_row       TYPE ty_t_row.
@@ -49,15 +49,37 @@ ENDCLASS.
 CLASS z2ui5_cl_ccc_sample_01 IMPLEMENTATION.
 
   METHOD z2ui5_if_app~main.
+      DATA temp1 TYPE z2ui5_cl_ccc_sample_01=>ty_t_row.
+      DATA temp2 LIKE LINE OF temp1.
 
     me->client = client.
-    IF client->check_on_init( ).
-      t_row = VALUE #( ( hu = `1000001` product = `Pallet A` quantity = 40 color = `grey_2` )
-                       ( hu = `1000002` product = `Pallet B` quantity = 12 color = `red_2` )
-                       ( hu = `1000003` product = `Box C`    quantity = 3  color = `` )
-                       ( hu = `1000004` product = `Box D`    quantity = 7  color = `grey_4` ) ).
+    IF client->check_on_init( ) IS NOT INITIAL.
+
+      CLEAR temp1.
+
+      temp2-hu = `1000001`.
+      temp2-product = `Pallet A`.
+      temp2-quantity = 40.
+      temp2-color = `grey_2`.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-hu = `1000002`.
+      temp2-product = `Pallet B`.
+      temp2-quantity = 12.
+      temp2-color = `red_2`.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-hu = `1000003`.
+      temp2-product = `Box C`.
+      temp2-quantity = 3.
+      temp2-color = ``.
+      INSERT temp2 INTO TABLE temp1.
+      temp2-hu = `1000004`.
+      temp2-product = `Box D`.
+      temp2-quantity = 7.
+      temp2-color = `grey_4`.
+      INSERT temp2 INTO TABLE temp1.
+      t_row = temp1.
       view_display( ).
-    ELSEIF client->check_on_event( ).
+    ELSEIF client->check_on_event( ) IS NOT INITIAL.
       on_event( ).
     ENDIF.
 
@@ -65,11 +87,24 @@ CLASS z2ui5_cl_ccc_sample_01 IMPLEMENTATION.
 
   METHOD view_display.
 
-    DATA(view) = z2ui5_cl_ui5_view_builder=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_ui5_view_builder.
+    DATA root TYPE REF TO z2ui5_cl_ui5_view_builder.
+    DATA page TYPE REF TO z2ui5_cl_ui5_view_builder.
+    DATA icons TYPE REF TO z2ui5_cl_ui5_view_builder.
+    DATA temp1 TYPE string_table.
+    DATA temp3 LIKE temp1.
+    DATA icon LIKE LINE OF temp3.
+      DATA temp4 TYPE string_table.
+    DATA table TYPE REF TO z2ui5_cl_ui5_view_builder.
+    DATA columns TYPE REF TO z2ui5_cl_ui5_view_builder.
+    DATA item TYPE REF TO z2ui5_cl_ui5_view_builder.
+    DATA cells TYPE REF TO z2ui5_cl_ui5_view_builder.
+    view = z2ui5_cl_ui5_view_builder=>factory( ).
 
     " customerApp scopes the rules of css/style.css that must not reach the
     " other apps on the page
-    DATA(root) = view->ele( n  = `View`
+
+    root = view->ele( n  = `View`
                             ns = `mvc`
         )->a( n = `xmlns`
               v = `sap.m`
@@ -86,7 +121,8 @@ CLASS z2ui5_cl_ccc_sample_01 IMPLEMENTATION.
 
     z2ui5_cl_ccc=>xmlns( root ).
 
-    DATA(page) = root->ele( `Page`
+
+    page = root->ele( `Page`
         )->a( n = `title`
               v = `Customer example - icons, row colours, column sort` ).
 
@@ -95,13 +131,28 @@ CLASS z2ui5_cl_ccc_sample_01 IMPLEMENTATION.
     z2ui5_cl_ccc=>render( page ).
 
     " 1. the icon font: sap-icon://my-icons/<name>
-    DATA(icons) = page->ele( `HBox`
+
+    icons = page->ele( `HBox`
         )->a( n = `class`
               v = `sapUiSmallMargin`
         )->a( n = `wrap`
               v = `Wrap` ).
-    LOOP AT VALUE string_table( ( `Regal` ) ( `Stapler` ) ( `LKWbeladen` ) ( `LKWausladen` )
-                                ( `Lagereinlagern` ) ( `Lagerauslagern` ) ( `umpacken` ) ) INTO DATA(icon).
+
+    CLEAR temp1.
+    INSERT `Regal` INTO TABLE temp1.
+    INSERT `Stapler` INTO TABLE temp1.
+    INSERT `LKWbeladen` INTO TABLE temp1.
+    INSERT `LKWausladen` INTO TABLE temp1.
+    INSERT `Lagereinlagern` INTO TABLE temp1.
+    INSERT `Lagerauslagern` INTO TABLE temp1.
+    INSERT `umpacken` INTO TABLE temp1.
+
+    temp3 = temp1.
+
+    LOOP AT temp3 INTO icon.
+
+      CLEAR temp4.
+      INSERT icon INTO TABLE temp4.
       icons->tag( `Button`
           )->a( n = `icon`
                 v = |sap-icon://my-icons/{ icon }|
@@ -110,17 +161,19 @@ CLASS z2ui5_cl_ccc_sample_01 IMPLEMENTATION.
           )->a( n = `class`
                 v = `sapUiTinyMarginEnd`
           )->a( n = `press`
-                v = client->_event( val = `ICON` t_arg = VALUE #( ( icon ) ) ) ).
+                v = client->_event( val = `ICON` t_arg = temp4 ) ).
     ENDLOOP.
 
     " 2. the row colours and 3. the column-sort header
-    DATA(table) = page->ele( `Table`
+
+    table = page->ele( `Table`
         )->a( n = `items`
               v = client->_bind( t_row )
         )->a( n = `class`
               v = `sapUiSmallMargin` ).
 
-    DATA(columns) = table->ele( `columns` ).
+
+    columns = table->ele( `columns` ).
     columns->ele( `Column`
         )->tag( `Link`
             )->a( n = `text`
@@ -132,7 +185,8 @@ CLASS z2ui5_cl_ccc_sample_01 IMPLEMENTATION.
     columns->ele( `Column` )->tag( `Text` )->a( n = `text` v = `Product` ).
     columns->ele( `Column` )->tag( `Text` )->a( n = `text` v = `Quantity` ).
 
-    DATA(item) = table->ele( `items`
+
+    item = table->ele( `items`
         )->ele( `ColumnListItem` ).
     " writeToDom puts data-color="<key>" on the tr - css/style.css colours it
     item->ele( `customData`
@@ -144,7 +198,8 @@ CLASS z2ui5_cl_ccc_sample_01 IMPLEMENTATION.
                   v = `{COLOR}`
             )->a( n = `writeToDom`
                   v = `{= ${COLOR} !== '' }` ).
-    DATA(cells) = item->ele( `cells` ).
+
+    cells = item->ele( `cells` ).
     cells->tag( `Text` )->a( n = `text` v = `{HU}` ).
     cells->tag( `Text` )->a( n = `text` v = `{PRODUCT}` ).
     cells->tag( `ObjectNumber` )->a( n = `number` v = `{QUANTITY}` ).
@@ -154,12 +209,15 @@ CLASS z2ui5_cl_ccc_sample_01 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD on_event.
+        DATA temp1 TYPE xsdboolean.
 
     CASE client->get( )-event.
       WHEN `ICON`.
         client->message_toast_display( |sap-icon://my-icons/{ client->get_event_arg( ) }| ).
       WHEN `SORT`.
-        descending = xsdbool( descending = abap_false ).
+
+        temp1 = boolc( descending = abap_false ).
+        descending = temp1.
         " the bound table travels back with the answer - no redisplay
         sort_rows( ).
     ENDCASE.

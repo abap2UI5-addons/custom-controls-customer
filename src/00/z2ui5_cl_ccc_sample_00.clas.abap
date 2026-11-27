@@ -36,11 +36,11 @@ CLASS z2ui5_cl_ccc_sample_00 IMPLEMENTATION.
   METHOD z2ui5_if_app~main.
 
     me->client = client.
-    IF client->check_on_init( ).
+    IF client->check_on_init( ) IS NOT INITIAL.
       text  = `Extension loaded`.
       color = `#0a6ed1`.
       view_display( ).
-    ELSEIF client->check_on_event( ).
+    ELSEIF client->check_on_event( ) IS NOT INITIAL.
       on_event( ).
     ENDIF.
 
@@ -48,9 +48,14 @@ CLASS z2ui5_cl_ccc_sample_00 IMPLEMENTATION.
 
   METHOD view_display.
 
-    DATA(view) = z2ui5_cl_ui5_view_builder=>factory( ).
+    DATA view TYPE REF TO z2ui5_cl_ui5_view_builder.
+    DATA root TYPE REF TO z2ui5_cl_ui5_view_builder.
+    DATA page TYPE REF TO z2ui5_cl_ui5_view_builder.
+    DATA box TYPE REF TO z2ui5_cl_ui5_view_builder.
+    view = z2ui5_cl_ui5_view_builder=>factory( ).
 
-    DATA(root) = view->ele( n  = `View`
+
+    root = view->ele( n  = `View`
                             ns = `mvc`
         )->a( n = `xmlns`
               v = `sap.m`
@@ -64,7 +69,8 @@ CLASS z2ui5_cl_ccc_sample_00 IMPLEMENTATION.
     " declares xmlns:z2ui5_ccc="z2ui5_ccc.cc" - once per view, on the root
     z2ui5_cl_ccc=>xmlns( root ).
 
-    DATA(page) = root->ele( `Page`
+
+    page = root->ele( `Page`
         )->a( n = `title`
               v = `abap2UI5 customer frontend extension` ).
 
@@ -85,7 +91,8 @@ CLASS z2ui5_cl_ccc_sample_00 IMPLEMENTATION.
     " before the controls that depend on any of them.
     z2ui5_cl_ccc=>render( page ).
 
-    DATA(box) = page->ele( `VBox`
+
+    box = page->ele( `VBox`
         )->a( n = `class`
               v = `sapUiMediumMargin` ).
 
